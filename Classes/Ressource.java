@@ -7,7 +7,7 @@ public class Ressource
 {
     // Attributes
     // private
-    private int type;                     // Type of ressource
+    private final int type;                     // Type of ressource
     private synchronized int totalAmount; // Amount of items of this ressource
     private final int amountForVictory;   // Amount of collected ressource needed to win for this kind of ressource
 
@@ -22,7 +22,7 @@ public class Ressource
     // copy
     public Ressource copy()
     {
-      
+      Ressource copy0 = new Ressource(this.type, this.totalAmount, this.amountForVictory);
     }
 
     // Methods

@@ -3,11 +3,17 @@
  * Desc : Implementation of the class Agent
  **/
 
+/**
+ * Types des différents agents :
+ * 0 - Producteur
+ * 1 - Joueur
+ **/
+
  public class Agent
  {
    // Attributes
-   protected int id;
-   protected int type;
+   protected final int id;
+   protected final int type;
    protected char[] addresse;
    protected char[] coordinateur;
 

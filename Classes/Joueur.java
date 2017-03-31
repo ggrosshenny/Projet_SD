@@ -7,6 +7,7 @@ public class Joueur extends Agent
 {
   // Attributes
   protected Ressource[] stock;
+  protected boolean isTrunByTurn;
   protected boolean isWatcher;
   protected Joueur[] watchers;
 
@@ -23,7 +24,7 @@ public class Joueur extends Agent
     this.stock = new Ressource[objectives.length()];
     for(i=0; i<objectives.length(); i++)
     {
-      stock[i] = 
+      stock[i] =
     }
   }
 }
