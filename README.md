@@ -1,5 +1,5 @@
 # Projet de SD
-## Auteurs : Guillaume Grosshennye et Audric Wasmer
+## Auteurs : Guillaume Grosshenny et Audric Wasmer
 
 
 # Description
