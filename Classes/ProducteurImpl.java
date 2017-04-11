@@ -18,8 +18,8 @@
    /**
    * Method : Producteur
    * Param : int, id0 - id of the agent
-   * param : char[], addr - address of the corba object of the Producteur object
-   * param : char[], coord - address of the corba object of the coordinateur object
+   * param : String, addr - address of the corba object of the Producteur object
+   * param : String, coord - address of the corba object of the coordinateur object
    * param : Ressource, prod - ressource of the producer
    * Desc : constructor of the Producteur class
    * return : void
@@ -30,7 +30,7 @@
      super(id0, 0, addr, coord);
      if(prod == null)
      {
-       prod = new Ressource(0,0,0);
+       prod = new Ressource(0,5,5);
      }
      this.production = prod.copy();
      this.amountToTake = 3;
