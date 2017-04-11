@@ -3,13 +3,14 @@
  * Modelize the ressources in the game
  **/
 
+
 public class Ressource
 {
     // Attributes
     // private
-    private final int type;                     // Type of ressource
-    private synchronized int totalAmount; // Amount of items of this ressource
-    private final int amountForVictory;   // Amount of collected ressource needed to win for this kind of ressource
+    private final int type;                 // Type of ressource
+    private int totalAmount;                // Amount of items of this ressource
+    private final int amountForVictory;     // Amount of collected ressource needed to win for this kind of ressource
 
     // Constructor
     public Ressource(int type0, int amount0, int amountForV)
@@ -23,6 +24,7 @@ public class Ressource
     public Ressource copy()
     {
       Ressource copy0 = new Ressource(this.type, this.totalAmount, this.amountForVictory);
+      return copy0;
     }
 
     // Methods
@@ -45,7 +47,7 @@ public class Ressource
      * Desc : Return the current amount of the current ressource
      * Return : int, amount of the ressource
      **/
-    public int getAmount()
+    synchronized int getAmount()
     {
       return this.totalAmount;
     }
@@ -75,7 +77,7 @@ public class Ressource
      * Desc : Remove the specified amount from the totalAmount of the ressource
      * Return : int, the amount really taken from the total Amount;
      **/
-    public boolean rmvRessource(int amountTaken)
+    public int rmvRessource(int amountTaken)
     {
       int realAmountTaken = this.totalAmount;
 
