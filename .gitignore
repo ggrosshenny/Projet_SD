@@ -5,6 +5,9 @@
 # Compiled class file
 *.class
 
+# Test class source 
+*Test.java
+
 # Log file
 *.log
 
