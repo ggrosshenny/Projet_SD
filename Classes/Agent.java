@@ -9,18 +9,25 @@
  * 1 - Joueur
  **/
 
- public class Agent
+ import java.rmi.server.UnicastRemoteObject ;
+ import java.rmi.RemoteException ;
+ import java.net.InetAddress.* ;
+ import java.net.* ;
+
+ public class Agent extends UnicastRemoteObject
  {
    // Attributes
    protected final int id;
    protected final int type;
-   protected char[] addresse;
-   protected char[] coordinateur;
+   protected String addresse;
+   protected String coordinateur;
 
 
    // Constructor
-   public Agent(int id0, int type0, char[] addr, char[] coord)
+   public Agent(int id0, int type0, String addr, String coord)
+    throws RemoteException
    {
+     super();
      this.id = id0;
      this.type = type0;
      this.addresse = addr;
@@ -37,6 +44,7 @@
     * Return : int, id of the agent
     **/
     public int getId()
+      throws RemoteException
     {
       return id;
     }
@@ -49,6 +57,7 @@
      * Return : int, type of the agent
      **/
      public int getType()
+      throws RemoteException
      {
        return type;
      }
@@ -60,7 +69,8 @@
       * Des : Give the addresse of the agent
       * Return : char[], addresse of the agent
       **/
-      public char[] getAddr()
+      public String getAddr()
+        throws RemoteException
       {
         return addresse;
       }
@@ -69,10 +79,10 @@
       /**
        * Method : getCoord
        * Param : void
-       * Des : Give the Coordinateur object
-       * Return : object, coordinateur
+       * Des : Give the Coordinateur addresse
        **/
-       public Object getCoord()
+       public String getCoord()
+        throws RemoteException
        {
          return coordinateur;
        }
