@@ -6,7 +6,10 @@ public interface Producteur extends Remote
   public int takeRsc()
     throws RemoteException;
 
-  public void CreateRsc()
+  public int getTypeOfRsc()
+    throws RemoteException;
+
+  public int getAmountRsc()
     throws RemoteException;
 
 }

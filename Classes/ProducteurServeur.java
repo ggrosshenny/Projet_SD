@@ -12,7 +12,7 @@ public class ProducteurServeur
     }
     try
     {
-      ProducteurImpl localProducer = new ProducteurImpl(Integer.parseInt(args[1]), args[2], args[3], null, 0);
+      ProducteurImpl localProducer = new ProducteurImpl(Integer.parseInt(args[1]), args[2], args[3], null, 5000);
       String name = new String("rmi://" + args[0] + "/Prod_" + args[1]);
       Naming.rebind(name, localProducer);
     }

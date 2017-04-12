@@ -5,6 +5,9 @@
 
  import java.rmi.server.UnicastRemoteObject ;
  import java.rmi.RemoteException ;
+ import java.util.Timer;
+ import java.util.TimerTask;
+ import java.awt.Toolkit;
 
  public class ProducteurImpl extends Agent implements Producteur
  {
@@ -12,8 +15,10 @@
    private Ressource production;      // Ressource produced by the producer
    private int amountToTake;          // Amount that the player will take when soliciting the producer
    private int timeBeforeProduction;  // Time in ms before ressource production
-   // Methods
+   public Toolkit toolkit;            // Toolkit used by TimerTask
+   public Timer timer;                // Timer used to shedule the task
 
+   // Methods
 
    /**
    * Method : Producteur
@@ -34,7 +39,11 @@
      }
      this.production = prod.copy();
      this.amountToTake = 3;
-     this.timeBeforeProduction = timeBeforeProduction0;
+     toolkit = Toolkit.getDefaultToolkit();
+     timer = new Timer();
+     timer.schedule(new ProductionTask(production),
+	                  0,        //initial delay
+	                  timeBeforeProduction0);  //subsequent rate
    }
 
 
@@ -58,18 +67,27 @@
    }
 
 
-   /**
-   * Method : CreateRsc
+  /**
+  * Method : getTypeOfRsc
+  * Param : void
+  * Desc : Return the type of the producer's Ressource object
+  * Return : int, the type of the Ressource object
+  **/
+  public int getTypeOfRsc()
+  {
+    return production.getType();
+  }
+
+
+  /**
+   * Method : getAmountRsc
    * Param : void
-   * Desc : Create ressource units after a certain amount of time (in ms)
-   * Return : void
+   * Desc : Return the actual amount of the Ressource object
+   * Return : int, return the amount of the Ressouce object
    **/
-   public void CreateRsc()
+   public int getAmountRsc()
    {
-     if(this.production.getAmount() == 0)
-     {
-       this.production.addRessource((this.production.getAmount() / 2) + 1);
-     }
+     return production.getAmount();
    }
 
 
