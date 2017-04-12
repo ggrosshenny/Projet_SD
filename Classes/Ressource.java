@@ -63,7 +63,7 @@ public class Ressource
     public boolean addRessource(int amountAdded)
     {
       this.totalAmount += amountAdded;
-      if(this.totalAmount == this.amountForVictory)
+      if(this.totalAmount >= this.amountForVictory)
       {
         return true;
       }
