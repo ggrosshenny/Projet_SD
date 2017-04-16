@@ -22,13 +22,14 @@ public class Joueur extends Agent
     try
     {
 		JoueurImpl j = (JoueurImpl) naming.lookup("rmi://" + args[0] + ":" + args[1] + "JoueurImpl");
-		      
-		while(true){
-			
-			
-			
+
+		while(true) // Changer condition du while
+    {
+
+
+
 		}
-      
+
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
