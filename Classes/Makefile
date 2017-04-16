@@ -15,7 +15,12 @@ default:
 	rm *.class
 
 producteur:
-	$(JC) $(JFLAGS) Agent.java Producteur*.java ProductionTask.java
+	$(JC) $(JFLAGS) Agent.java Ressource.java ProductionTask.java Producteur*.java
+	cp *.class ../Bin
+	rm *.class
+
+joueur:
+	$(JC) $(JFLAGS) Agent.java Joueur*.java
 	cp *.class ../Bin
 	rm *.class
 
