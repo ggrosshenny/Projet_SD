@@ -2,6 +2,8 @@
  * Class JoueurImpl
  * Extends class UnicastRemoteObject
  * Implements interface Joueur
+ * Is the server part of each player. Implements the methods that can be called by
+ *    other players. Thoses methods are always available.
  **/
 
 import java.rmi.server.UnicastRemoteObject ;
@@ -32,6 +34,14 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
       stock[i].totalAmount = 0;
     }
   }
+
+  // TO DO
+  /*
+  Methode permettant à l'IA d'executer ses recherches de ressources, ses vols, etc...
+      utilisant un timertask (avec un timer si la partie n'est pas tour par tour, un wait sinon)
+  Methode isStolen -> si le joeuur n'est pas en observation, il donne de ses
+                      ressources au voleur, sinon il lui demonte sa gueule
+  */
 
 
 }
