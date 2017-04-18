@@ -15,17 +15,25 @@ public class JoueurCoop extends Thread
   // Attributes
   private Ressource[] stock;      // Stock of the player
   private String[][] prod;        // Addresses of producers ([<type of ressource produced>][<producer>])
-  private int amountToTake;       // Amount to take each time the player wants to take ressource from a producer
-  private Random rand;            // Random object to create random int
+  private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
+  private Random rand;            // Used to create random int
+  private Coordinateur coord;     // Coordinateur object
 
   // methods
 
-  public JoueurCoop(Ressource[] stock0, String[][] prod0, int amountToTake0)
+  public JoueurCoop(String coord0, Ressource[] stock0, String[][] prod0, int amountToTake0)
   {
     this.stock = stock0;
     this.prod = prod0;
     this.amountToTake = amountToTake0;
     this.rand = new Random();
+    try
+    {
+      this.coord = (Coordinateur)Naming.lookup(coord0);
+    }
+    catch (NotBoundException re) { System.out.println(re) ; }
+    catch (RemoteException re) { System.out.println(re) ; }
+    catch (MalformedURLException e) { System.out.println(e) ; }
   }
 
   /**
@@ -44,21 +52,27 @@ public class JoueurCoop extends Thread
     int rscToTake = 0;
     Producteur produ0;
 
-    // seek for a ressource that we need
-    for(i=randomRessourceType; i==randomRessourceType-1; ((i+1)%randomRessourceType))
+    try
     {
-      if(!stock[i].amountForVictoryIsReached())
+      // seek for a ressource that we need
+      for(i=randomRessourceType; i==randomRessourceType-1; ((i+1)%randomRessourceType))
       {
-        rscToTake = i;
-        break;
+        if(!stock[i].amountForVictoryIsReached())
+        {
+          rscToTake = i;
+          break;
+        }
       }
-    }
 
-    // Seek for a producer of the given ressource type
-    j=rand.nextInt(prod[i].length());
-    produ0 = (Producteur)Naming.lookup(prod[i][j]);
-    stock[i] += produ0.takeRsc();
-    return produ0;
+      // Seek for a producer of the given ressource type
+      j=rand.nextInt(prod[i].length());
+      produ0 = (Producteur)Naming.lookup(prod[i][j]);
+      stock[i] += produ0.takeRsc();
+      return produ0;
+    }
+    catch (NotBoundException re) { System.out.println(re) ; }
+    catch (RemoteException re) { System.out.println(re) ; }
+    catch (MalformedURLException e) { System.out.println(e) ; }
   }
 
 
@@ -70,7 +84,13 @@ public class JoueurCoop extends Thread
    **/
    takeRessource(Producteur produ)
    {
-     stock[produ.getType] += produ.takeRsc();
+     try
+     {
+       stock[produ.getType] += produ.takeRsc();
+     }
+     catch (NotBoundException re) { System.out.println(re) ; }
+     catch (RemoteException re) { System.out.println(re) ; }
+     catch (MalformedURLException e) { System.out.println(e) ; }
    }
 
 

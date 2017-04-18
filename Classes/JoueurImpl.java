@@ -19,9 +19,10 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
   private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
   private Joueur[] watchers;      // List of players watching for ohter player's actions
+  private Thread PlayerClient;    // Thread used by the player to take ressources or watch other player's actions
 
   // Methods
-  public JoueurImpl(int id0, int type0, String addr, String coord, Ressource[] objectives, int nbJoueurs)
+  public JoueurImpl(int id0, int type0, String addr, String coord, Ressource[] objectives, int nbJoueurs, String[][] prod0, boolean isCoop0, boolean isTbT)
   {
     int i=0;
 
@@ -35,6 +36,38 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
       stock[i] = objectives[i];
       stock[i].totalAmount = 0;
     }
+
+    this.prod = prod0;
+    this.isCoop = isCoop0;
+    this.isTurnByTurn = isTbT;
+
+    // Create the client part of the player (p2p)
+    // Create the player object with the right behaiour
+    if(!isTurnByTurn)
+    {
+      if(isCoop) // Cooperative player without turn waiting
+      {
+        JoueurCoop joueur = new JoueurCoop(coord, stock, prod, 3);
+      }
+      if(!isCoop) // Non-cooperative player without turn waiting
+      {
+        //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
+      }
+    }
+    else
+    {
+      if(isCoop) // Cooperative player without turn waiting
+      {
+        // TO DO
+      }
+      if(!isCoop) // Non-cooperative player without turn waiting
+      {
+        // TO DO
+      }
+    }
+    // Creating thread for the client part of the player
+    PlayerClient = new Thread(joueur, addr + "_threadClient");
+
   }
 
   /**
@@ -48,9 +81,7 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
 
   // TO DO
   /*
-  Methode permettant à l'IA d'executer ses recherches de ressources, ses vols, etc...
-      utilisant un timertask (avec un timer si la partie n'est pas tour par tour, un wait sinon)
-      -> classes JoueurIndiv et JoueurCoop
+  Thread pour les classes JoueurCoop, JoueurIndiv, JoueurCoopTbT et JoueurIndivTbT
   Methode isStolen -> si le joeuur n'est pas en observation, il donne de ses
                       ressources au voleur, sinon il lui demonte sa gueule
   */
