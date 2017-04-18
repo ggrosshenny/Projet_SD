@@ -8,9 +8,12 @@ public class Coordinateur {
         
     public Coordinateur() {}
 
-    public String sayHello() {
-        return "Hello, world!";
-    }
+	public static void endGame(int idJoueur){
+		for(int i = 0; i < agents.length(); i++){
+			
+			agents[i].gameIsOver(idJoueur - nb_producteurs);
+		}
+	}
         
     public static void main(String args[]) {
 		
@@ -27,32 +30,32 @@ public class Coordinateur {
             int nb_joueurs = args[3];
             int nb_producteurs = args[4];
             Agent[] agents;
-            Ressource[] objectifs;
-			Ressource[] objectifs_joueur;
+            Ressource[] objectives;
+			Ressource[] objectives_player;
             Random rand = new Random();
             int randNbRessources = rand.nextInt(nb_producteurs + 1);
 			int randRessourceID_prod;
 			
 			for(int i = 0; i < randNbRessources; i++){
-				objectifs[i] = new Ressource(i, 0, 100);
+				objectives[i] = new Ressource(i, 0, 100);
 			}
             
             for(int i = 0; i < nb_joueurs + nb_producteurs; i++){
 					if(i <= nb_producteurs){
 						/* Déterminer aléatoirement quelle ressource lui attribuer (fuck eduroam) */
 						if(i <= randNbRessources){ // On s'assure qu'il y ait au moins 1 producteur pour chaque ressource
-							agents[i] = new Producteur(i, 0, /*addr*/, /*coord*/, objectifs[i] );
+							agents[i] = new Producteur(i, 0, /*addr*/, /*coord*/, objectives[i] );
 						}
 						else{
 							randRessourceID_prod = rand.nextInt(randNbRessources);
-							agents[i] = new Producteur(i, 0, /*addr*/, /*coord*/, objectifs[randRessourceID_prod] );
+							agents[i] = new Producteur(i, 0, /*addr*/, /*coord*/, objectives[randRessourceID_prod] );
 						}
 					}
 					else{
 						for(int j = 0; j < randNbRessources; j++){
-							objectifs_joueur[j] = objectifs[j].copy();
+							objectives_player[j] = objectives[j].copy();
 						}
-						agents[i] = new JoueurImpl(i, 1, /*addr*/, /*coord*/, objectifs_joueurs, nb_joueurs);
+						agents[i] = new JoueurImpl(i, 1, /*addr*/, /*coord*/, false, objectives_player, nb_joueurs);
 					}						
 			}
 
