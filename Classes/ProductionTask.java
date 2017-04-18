@@ -21,6 +21,9 @@ public class ProductionTask extends TimerTask
 
   public void run()
   {
-    prod.addRessource((prod.getAmount() / 2) + 1);
+    if((prod.getAmount() / 2) > 0)
+    {
+      prod.addRessource((prod.getAmount() / 2) + 1);
+    }
   }
 }

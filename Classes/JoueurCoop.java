@@ -39,7 +39,7 @@ public class JoueurCoop extends Thread
   /**
    * Method : takeRessourceFromNewProducer
    * Param : void
-   * Desc : Choose a ressource from those that are not allready completed
+   * Desc : Choose a ressource from those that are not already completed
    *        and find a producer. Take a specified amount of ressource from the
    *        specified producer. Add the taken amount to the stock.
    * Return : void
@@ -82,7 +82,7 @@ public class JoueurCoop extends Thread
    * Desc : Take ressource from the already targeted producer
    * Return :
    **/
-   takeRessource(Producteur produ)
+   public void takeRessource(Producteur produ)
    {
      try
      {

@@ -19,7 +19,7 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
   private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
   private Joueur[] watchers;      // List of players watching for ohter player's actions
-  private Thread PlayerClient;    // Thread used by the player to take ressources or watch other player's actions
+  private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
 
   // Methods
   public JoueurImpl(int id0, int type0, String addr, String coord, Ressource[] objectives, int nbJoueurs, String[][] prod0, boolean isCoop0, boolean isTbT)
@@ -66,25 +66,43 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
       }
     }
     // Creating thread for the client part of the player
-    PlayerClient = new Thread(joueur, addr + "_threadClient");
+    playerClient = new Thread(joueur, addr + "_threadClient");
+  }
+
+
+  /**
+   * Method : begin
+   * Param : void
+   * Desc : Start the thread
+   * Return : void
+   **/
+  public void begin()
+  {
+   playerClient.start();
+  }
+
+
+  /**
+  * Method : gameIsOver
+  * Param : int, winnerID - id of the winner
+  * Desc : Stop the client thread and shut down rmi server cleanly
+  * Return : void
+  **/
+  public void gameIsOver(int winnerID)
+  {
+    System.out.println("The game is over. The winner is player " + winnerID);
 
   }
 
+
   /**
-   * Method : iStolen
-   * Param : int, rsc - the kind of ressource that is stolen
-   * Param : int, rsc - the amount of ressource that is stolen
+   * Method : steal
+   * Param : int, rscType - the kind of ressource that is stolen
+   * Param : int, amount - the amount of ressource that is stolen
    * Desc : Method that modelize the moment when the palyer is stolen by someone
    * Return : int, the stolen amount of the specified ressource
    **/
    // TO DO
-
-  // TO DO
-  /*
-  Thread pour les classes JoueurCoop, JoueurIndiv, JoueurCoopTbT et JoueurIndivTbT
-  Methode isStolen -> si le joeuur n'est pas en observation, il donne de ses
-                      ressources au voleur, sinon il lui demonte sa gueule
-  */
 
 
 }

@@ -1,38 +1,19 @@
 /**
- * Class Joueur
- * Extends class Agent
+ * interface Joueur
+ * Interface for JoueurImpl
  **/
 
-import java.net.MalformedURLException ;
-import java.rmi.registry.Registry;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+ import java.rmi.Remote ;
+ import java.rmi.RemoteException ;
 
-public class Joueur extends Agent
+public interface Joueur extends Remote
 {
-   public static void main(String [] args)
-  {
+  public int steal(int rscType, int amount)
+    throws RemoteException;
 
-	if (args.length != 2)
-    {
-		System.out.println("Usage : java Client <machine du Serveur> <port du rmiregistry> ") ;
-		System.exit(0) ;
-    }
-    try
-    {
-		JoueurImpl j = (JoueurImpl) naming.lookup("rmi://" + args[0] + ":" + args[1] + "JoueurImpl");
+  public void gameIsOver(int winnerID)
+    throws RemoteException;
 
-		while(true) // Changer condition du while
-    {
-
-
-
-		}
-
-    }
-    catch (NotBoundException re) { System.out.println(re) ; }
-    catch (RemoteException re) { System.out.println(re) ; }
-    catch (MalformedURLException e) { System.out.println(e) ; }
-  }
+  public void begin()
+    throws RemoteException;
 }
