@@ -58,7 +58,7 @@ public class JoueurIndiv extends Thread
     try
     {
       // seek for a ressource that we need
-      for(i=randomRessourceType; i==randomRessourceType-1; ((i+1)%randomRessourceType))
+      for(i=randomRessourceType; i==randomRessourceType-1; i=(i+1)%randomRessourceType)
       {
         if(!stock[i].amountForVictoryIsReached())
         {
@@ -85,7 +85,7 @@ public class JoueurIndiv extends Thread
    * Desc : Take ressource from the already targeted producer
    * Return :
    **/
-   takeRessource(Producteur produ)
+   public void takeRessource(Producteur produ)
    {
      try
      {
@@ -146,7 +146,7 @@ public class JoueurIndiv extends Thread
     boolean finished = false;
     Producteur produ = null;
 
-    While(!finished && running)
+    while(!finished && running)
     {
       // Seeking for producer and/or taking ressources
       if((produ == null) || (produ.getAmountRsc() <= 0))
@@ -165,12 +165,10 @@ public class JoueurIndiv extends Thread
       }
 
     }
-
-  }
-  // Informing the coordinator that every objectives have been completed
-  if(finished)
-    {
+	// Informing the coordinator that every objectives have been completed
+	if(finished)
+	{
       this.coord.endGame(this.id);
-    }
-
+	}
+  }
 }
