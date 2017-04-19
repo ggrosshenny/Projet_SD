@@ -129,10 +129,9 @@ public class JoueurIndiv extends Thread
 
     }
 
-    // TO DO
-    // envoyer le message au coordinateur "j'ai finis fdp !"
-
   }
-
+  // Informing the coordinator that every objectives have been completed
+  if(finished)
+	coord.endGame(this.id);
 
 }
