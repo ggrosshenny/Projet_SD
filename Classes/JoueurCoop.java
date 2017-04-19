@@ -58,7 +58,7 @@ public class JoueurCoop extends Thread
     try
     {
       // seek for a ressource that we need
-      for(i=randomRessourceType; i==randomRessourceType-1; ((i+1)%randomRessourceType))
+      for(i=randomRessourceType; i==randomRessourceType-1; i=((i+1)%randomRessourceType))
       {
         if(!stock[i].amountForVictoryIsReached())
         {
