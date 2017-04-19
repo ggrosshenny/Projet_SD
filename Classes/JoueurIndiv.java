@@ -23,11 +23,9 @@ public class JoueurIndiv extends Thread
 
   // methods
 
-  public JoueurCoop(String id0, String coord0, int amountToTake0)
+  public JoueurIndiv(String id0, String coord0, int amountToTake0)
   {
     this.id = id0;
-    this.stock = stock0;
-    this.prod = prod0;
     this.amountToTake = amountToTake0;
     this.rand = new Random();
     this.running = true;
@@ -108,6 +106,31 @@ public class JoueurIndiv extends Thread
    {
      this.running = false;
    }
+   
+   /**
+   * Method : setProducteursAndPlayersAddresses
+   * Param : String, players - list of players addresses
+   * Param : String, producers - list of producers addresses
+   * Desc : Set the producers and players addresses
+   * Return : void
+   **/
+  public void setProducteursAndPlayersAddresses(String[] players0, String[][] producers0)
+  {
+   this.players = players0;
+   this.prod = producers0;
+  }
+
+
+  /**
+   * Method : setStock
+   * Param : Ressource[], stock - list of all ressources that the player has to complete
+   * Desc : set the stock with Ressource objetcs
+   * Return : void
+   **/
+  public void setStock(Ressource[] stock0)
+  {
+    this.stock = stock0;
+  }
 
   /**
    * Method : run
