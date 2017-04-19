@@ -29,15 +29,11 @@
    * Desc : constructor of the Producteur class
    * return : void
    **/
-   public ProducteurImpl(int id0, String addr, String coord, Ressource prod, int timeBeforeProduction0)
+   public ProducteurImpl(String id0, String coord, int typeRsc, int amountRsc, int amountForVictRsc,int timeBeforeProduction0)
       throws RemoteException
    {
-     super(id0, 0, addr, coord);
-     if(prod == null)
-     {
-       prod = new Ressource(0,5,5);
-     }
-     this.production = prod.copy();
+     super(id0, 0, coord);
+     this.production = new Ressource(typeRsc, amountRsc, amountForVictRsc);
      this.amountToTake = 3;
      toolkit = Toolkit.getDefaultToolkit();
      timer = new Timer();

@@ -17,20 +17,18 @@
  public class Agent extends UnicastRemoteObject
  {
    // Attributes
-   protected final int id;
+   protected final String id;
    protected final int type;
-   protected String addresse;
    protected String coordinateur;
 
 
    // Constructor
-   public Agent(int id0, int type0, String addr, String coord)
+   public Agent(String id0, int type0, String coord)
     throws RemoteException
    {
      super();
      this.id = id0;
      this.type = type0;
-     this.addresse = addr;
      this.coordinateur = coord;
    }
 
@@ -41,9 +39,9 @@
     * Method : getId
     * Param : void
     * Des : Give the Id of the agent
-    * Return : int, id of the agent
+    * Return : String, id of the agent
     **/
-    public int getId()
+    public String getId()
       throws RemoteException
     {
       return id;
@@ -61,19 +59,6 @@
      {
        return type;
      }
-
-
-     /**
-      * Method : getAddr
-      * Param : void
-      * Des : Give the addresse of the agent
-      * Return : char[], addresse of the agent
-      **/
-      public String getAddr()
-        throws RemoteException
-      {
-        return addresse;
-      }
 
 
       /**

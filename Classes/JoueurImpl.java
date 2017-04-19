@@ -10,7 +10,7 @@ import java.rmi.server.UnicastRemoteObject ;
 import java.rmi.RemoteException ;
 
 
-public class JoueurImpl extends UnicastRemoteObject implements Joueur
+public class JoueurImpl implements Joueur
 {
   // Attributes
   private Ressource[] stock;      // Stock of the player
@@ -22,11 +22,11 @@ public class JoueurImpl extends UnicastRemoteObject implements Joueur
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
 
   // Methods
-  public JoueurImpl(int id0, int type0, String addr, String coord, Ressource[] objectives, int nbJoueurs, String[][] prod0, boolean isCoop0, boolean isTbT)
+  public JoueurImpl(String id0, int type0, String coord, int nbJoueurs, String[][] prod0, boolean isCoop0, boolean isTbT)
   {
     int i=0;
 
-    super(id0, type0, addr, coord);
+    super(id0, type0, coord);
     this.isWatcher = false;
     this.watchers = new Joueur[nbJoueurs];
     this.stock = new Ressource[objectives.length()];

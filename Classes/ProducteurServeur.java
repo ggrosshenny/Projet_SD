@@ -5,16 +5,16 @@ public class ProducteurServeur
 {
   public static void main(String[] args)
   {
-    if(args.length != 6)
+    if(args.length != 7)
     {
-      System.out.println("Usage : producteurServeur machine id addr coord prod timeBeforeProduction") ;
+      System.out.println("Usage : producteurServeur port id coord prodType prodAmount prodAmoutForVictory timeBeforeProduction");
       return;
     }
     try
     {
-      ProducteurImpl localProducer = new ProducteurImpl(Integer.parseInt(args[1]), args[2], args[3], null, 5000);
-      String name = new String("rmi://" + args[0] + "/Prod_" + args[1]);
-      Naming.rebind(name, localProducer);
+      //                                                 id                         coord   rsc     timeBeforeProduction
+      ProducteurImpl localProducer = new ProducteurImpl(args[1], args[2], Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]));
+      Naming.rebind("rmi://localhost:" + args[0] + "/" + args[1], localProducer);
     }
     catch (RemoteException re) { System.out.println(re) ; }
     catch (MalformedURLException e) { System.out.println(e) ; }

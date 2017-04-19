@@ -3,14 +3,16 @@
  * Modelize the ressources in the game
  **/
 
+import java.io.Serializable;
 
-public class Ressource
+public class Ressource implements Serializable
 {
     // Attributes
     // private
-    private final int type;                 // Type of ressource
-    private int totalAmount;                // Amount of items of this ressource
-    private final int amountForVictory;     // Amount of collected ressource needed to win for this kind of ressource
+    private final int type;                   // Type of ressource
+    private int totalAmount;                  // Amount of items of this ressource
+    private final int amountForVictory;       // Amount of collected ressource needed to win for this kind of ressource
+    static final long serialVersionUID = 42;  // id for rmi use
 
     // Constructor
     public Ressource(int type0, int amount0, int amountForV)
@@ -60,7 +62,7 @@ public class Ressource
      * Return : boolean, true if the totalAmount == amountForVictory, else false
                 used for player to know if he reached the objectif
      **/
-    public boolean addRessource(int amountAdded)
+    synchronized boolean addRessource(int amountAdded)
     {
       this.totalAmount += amountAdded;
       if(this.totalAmount >= this.amountForVictory)
@@ -77,7 +79,7 @@ public class Ressource
      * Desc : Remove the specified amount from the totalAmount of the ressource
      * Return : int, the amount really taken from the total Amount;
      **/
-    public int rmvRessource(int amountTaken)
+    synchronized int rmvRessource(int amountTaken)
     {
       int realAmountTaken = this.totalAmount;
 
