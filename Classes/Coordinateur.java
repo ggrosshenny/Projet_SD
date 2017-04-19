@@ -9,13 +9,20 @@ public class Coordinateur {
     public Coordinateur() {}
 
 	public static void endGame(String idJoueur){
+		
+		JoueurImpl tempJoueur;
+		ProducteurImpl tempProd;
+		
 		for(int i = 0; i < Joueurs.length(); i++){
 			
-			Joueurs[i].gameIsOver(idJoueur);
+			tempJoueur = naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + Joueurs[i]);
+			tempJoueur.gameIsOver(idJoueur);
 		}
 		for(int i = 0; i < Producteurs.length(); i++){
 			for(int j = 0; j < Producteurs[i].length(); j++){
-				Producteurs[i][j].gameIsOver(idJoueur);
+				
+				tempProd = naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + Producteurs[i][j]);
+				tempProd.gameIsOver(idJoueur);
 	}
         
     public static void main(String args[]) {
@@ -50,7 +57,7 @@ public class Coordinateur {
 			for(i = 0; i < Producteurs.length(); i++){
 				for(int j = 0; j < Producteurs[i].length(); j++){
 					tempProd = naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + Producteurs[i][j]);
-					tempProd.SendLists(Joueurs, Producteurs);
+					tempProd.begin(Joueurs, Producteurs);
 				}
 			}
 			
