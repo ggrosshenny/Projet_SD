@@ -75,9 +75,18 @@ public class JoueurImpl implements Joueur
    * Desc : Start the thread
    * Return : void
    **/
-  public void begin()
+  public void begin(String[] Joueurs, String[][] Producteurs)
   {
-   playerClient.start();
+    int i = 0;
+    ProducteurImpl tempProducer;
+    for(i=0; i<Producteurs.length(); i++)
+    {
+      tempProducer = (Producteur)Naming.lookup(Producteurs[i][0]);
+      this.stock[i] = tempProducer.copy();
+    }
+    playerClient.setStock(this.stock);
+    playerClient.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+    playerClient.start();
   }
 
 
@@ -92,6 +101,7 @@ public class JoueurImpl implements Joueur
     System.out.println("The game is over. The winner is player " + winnerID);
     playerClient.stopClient();
   }
+
 
 
   /**

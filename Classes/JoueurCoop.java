@@ -16,6 +16,7 @@ public class JoueurCoop extends Thread
   private String id;              // Id of the player who created the thread
   private Ressource[] stock;      // Stock of the player
   private String[][] prod;        // Addresses of producers ([<type of ressource produced>][<producer>])
+  private String[] players;       // Addresses of all players in the game
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
   private Coordinateur coord;     // Coordinateur object
@@ -86,10 +87,36 @@ public class JoueurCoop extends Thread
    * Desc : Set the running boolean to false, that will stop the thread in a stable state.
    * Return : void
    **/
-   public void stopClient()
-   {
-     this.running = false;
-   }
+  public void stopClient()
+  {
+   this.running = false;
+  }
+
+
+  /**
+   * Method : setProducteursAndPlayersAddresses
+   * Param : String, players - list of players addresses
+   * Param : String, producers - list of producers addresses
+   * Desc : Set the producers and players addresses
+   * Return : void
+   **/
+  public void setProducteursAndPlayersAddresses(String[] players0, String[][] producers0)
+  {
+   this.players = players0;
+   this.prod = producers0;
+  }
+
+
+  /**
+   * Method : setStock
+   * Param : Ressource[], stock - list of all ressources that the player has to complete
+   * Desc : set the stock with Ressource objetcs
+   * Return : void
+   **/
+  public void setStock(Ressource[] stock0)
+  {
+    this.stock = stock0;
+  }
 
 
   /**
@@ -125,7 +152,7 @@ public class JoueurCoop extends Thread
     boolean finished = false;
     Producteur produ = null;
 
-    While(!finished && running)
+    while(!finished && running)
     {
       // Seeking for producer and/or taking ressources
       if((produ == null) || (produ.totalAmount < amountToTake) || (stock[produ.getType()].amountForVictoryIsReached))
