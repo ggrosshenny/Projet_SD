@@ -27,8 +27,6 @@ public class JoueurCoop extends Thread
   public JoueurCoop(String id0, String coord0, int amountToTake0)
   {
     this.id = id0;
-    this.stock = stock0;
-    this.prod = prod0;
     this.amountToTake = amountToTake0;
     this.rand = new Random();
     this.running = true;
