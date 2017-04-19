@@ -22,7 +22,7 @@ public class JoueurImpl implements Joueur
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
 
   // Methods
-  public JoueurImpl(String id0, int type0, String coord, int nbJoueurs, String[][] prod0, boolean isCoop0, boolean isTbT)
+  public JoueurImpl(String id0, int type0, String coord, int nbJoueurs, boolean isCoop0, boolean isTbT)
   {
     int i=0;
 
@@ -37,7 +37,6 @@ public class JoueurImpl implements Joueur
       stock[i].totalAmount = 0;
     }
 
-    this.prod = prod0;
     this.isCoop = isCoop0;
     this.isTurnByTurn = isTbT;
 
@@ -47,7 +46,7 @@ public class JoueurImpl implements Joueur
     {
       if(isCoop) // Cooperative player without turn waiting
       {
-        JoueurCoop joueur = new JoueurCoop(coord, stock, prod, 3);
+        JoueurCoop joueur = new JoueurCoop(id0, coord, 3);
       }
       if(!isCoop) // Non-cooperative player without turn waiting
       {
@@ -66,7 +65,7 @@ public class JoueurImpl implements Joueur
       }
     }
     // Creating thread for the client part of the player
-    playerClient = new Thread(joueur, addr + "_threadClient");
+    playerClient = new Thread(joueur, id0 + "_threadClient");
   }
 
 
@@ -91,7 +90,7 @@ public class JoueurImpl implements Joueur
   public void gameIsOver(int winnerID)
   {
     System.out.println("The game is over. The winner is player " + winnerID);
-
+    playerClient.stopClient();
   }
 
 

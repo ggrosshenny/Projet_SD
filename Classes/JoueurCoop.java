@@ -13,20 +13,24 @@ public class JoueurCoop extends Thread
 {
 
   // Attributes
+  private String id;              // Id of the player who created the thread
   private Ressource[] stock;      // Stock of the player
   private String[][] prod;        // Addresses of producers ([<type of ressource produced>][<producer>])
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
   private Coordinateur coord;     // Coordinateur object
+  private boolean running;        // Boolean to know if the thread should stop or not
 
   // methods
 
-  public JoueurCoop(String coord0, Ressource[] stock0, String[][] prod0, int amountToTake0)
+  public JoueurCoop(String id0, String coord0, int amountToTake0)
   {
+    this.id = id0;
     this.stock = stock0;
     this.prod = prod0;
     this.amountToTake = amountToTake0;
     this.rand = new Random();
+    this.running = true;
     try
     {
       this.coord = (Coordinateur)Naming.lookup(coord0);
@@ -77,6 +81,18 @@ public class JoueurCoop extends Thread
 
 
   /**
+   * Method : stopClient
+   * Param : void
+   * Desc : Set the running boolean to false, that will stop the thread in a stable state.
+   * Return : void
+   **/
+   public void stopClient()
+   {
+     this.running = false;
+   }
+
+
+  /**
    * Method : takeRessource
    * Param : void
    * Desc : Take ressource from the already targeted producer
@@ -109,7 +125,7 @@ public class JoueurCoop extends Thread
     boolean finished = false;
     Producteur produ = null;
 
-    While(!finished)
+    While(!finished && running)
     {
       // Seeking for producer and/or taking ressources
       if((produ == null) || (produ.totalAmount < amountToTake) || (stock[produ.getType()].amountForVictoryIsReached))
@@ -129,9 +145,10 @@ public class JoueurCoop extends Thread
 
     }
 
-    // TO DO
-    // envoyer le message au coordinateur "j'ai finis fdp !"
-
+    if(finished)
+    {
+      this.coord.endGame(this.id);
+    }
   }
 
 
