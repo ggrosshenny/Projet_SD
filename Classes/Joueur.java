@@ -1,7 +1,7 @@
 import java.net.* ;
 import java.rmi.* ;
 
-public class Joueur extends UnicastRemoteObject
+public class Joueur
 {
 
   public static void main(String[] args)

@@ -8,6 +8,8 @@
 
 import java.rmi.server.UnicastRemoteObject ;
 import java.rmi.RemoteException ;
+import java.net.* ;
+import java.rmi.* ;
 
 
 public class JoueurImpl implements Joueur
@@ -22,23 +24,18 @@ public class JoueurImpl implements Joueur
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
 
   // Methods
-  public JoueurImpl(String id0, int type0, String coord, int nbJoueurs, boolean isCoop0, boolean isTbT)
+  public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT)
   {
+    super(id0, type0, coord);
+
     int i=0;
 
-    super(id0, type0, coord);
     this.isWatcher = false;
-    this.watchers = new Joueur[nbJoueurs];
-    this.stock = new Ressource[objectives.length()];
-
-    for(i=0; i<objectives.length(); i++)
-    {
-      stock[i] = objectives[i];
-      stock[i].totalAmount = 0;
-    }
 
     this.isCoop = isCoop0;
     this.isTurnByTurn = isTbT;
+
+    JoueurCoop joueur;
 
     // Create the client part of the player (p2p)
     // Create the player object with the right behaiour
@@ -46,7 +43,7 @@ public class JoueurImpl implements Joueur
     {
       if(isCoop) // Cooperative player without turn waiting
       {
-        JoueurCoop joueur = new JoueurCoop(id0, coord, 3);
+        joueur = new JoueurCoop(id0, coord, 3);
       }
       if(!isCoop) // Non-cooperative player without turn waiting
       {
@@ -79,11 +76,13 @@ public class JoueurImpl implements Joueur
   {
     int i = 0;
     ProducteurImpl tempProducer;
-    for(i=0; i<Producteurs.length(); i++)
+    this.stock = new Producteur[Producteurs.length];
+    for(i=0; i<Producteurs.length; i++)
     {
-      tempProducer = (Producteur)Naming.lookup(Producteurs[i][0]);
-      this.stock[i] = tempProducer.copy();
+      tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
+      this.stock[i] = tempProducer.copyRsc();
     }
+    this.watchers = new Joueur[Joueurs.length];
     playerClient.setStock(this.stock);
     playerClient.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
     playerClient.start();

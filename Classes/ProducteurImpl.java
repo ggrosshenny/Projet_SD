@@ -93,10 +93,22 @@
    * Desc : tell to the peer if the ressource of the producer is empty or not
    * Return : if the ressource is empty : true, else : false
    **/
-   private boolean isEmpty()
+  public boolean isEmpty()
+  {
+   return (this.production.getAmount() == 0);
+  }
+
+  /**
+   * Method : copyRsc
+   * Param : void
+   * Desc : return a copy of the producer's ressource
+   * Return : Ressource, the copy of the ressource
+   **/
+   public Ressource copyRsc()
    {
-     return (this.production.getAmount() == 0);
+     return this.production.copy();
    }
+
 
 
  }

@@ -6,6 +6,7 @@
 *        server part of player (i.e. this is one variant of the client part of player).
 **/
 
+import java.util.Random;
 import java.rmi.* ;
 import java.net.MalformedURLException ;
 
@@ -68,7 +69,7 @@ public class JoueurCoop extends Thread
       }
 
       // Seek for a producer of the given ressource type
-      j=rand.nextInt(prod[i].length());
+      j=rand.nextInt(prod[i].length);
       produ0 = (Producteur)Naming.lookup(prod[i][j]);
       stock[i] += produ0.takeRsc();
       return produ0;
@@ -127,7 +128,7 @@ public class JoueurCoop extends Thread
    {
      try
      {
-       stock[produ.getType] += produ.takeRsc();
+       stock[produ.getTypeOfRsc()].addRessource(produ.takeRsc());
      }
      catch (NotBoundException re) { System.out.println(re) ; }
      catch (RemoteException re) { System.out.println(re) ; }
@@ -144,7 +145,7 @@ public class JoueurCoop extends Thread
    *        are completed.
    * Return : void
    **/
-  void run()
+  public void run()
   {
     int i = 0;
     boolean finished = false;
@@ -153,9 +154,9 @@ public class JoueurCoop extends Thread
     while(!finished && running)
     {
       // Seeking for producer and/or taking ressources
-      if((produ == null) || (produ.totalAmount < amountToTake) || (stock[produ.getType()].amountForVictoryIsReached))
+      if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()))
       {
-        produ = takeRessourceFromNewProducer(produ);
+        produ = takeRessourceFromNewProducer();
       }
       else
       {
@@ -163,7 +164,7 @@ public class JoueurCoop extends Thread
       }
 
       // Verifying if all objectives are completed
-      for(i=0; i<stock.length(); i++)
+      for(i=0; i<stock.length; i++)
       {
         finished = finished && stock[i].amountForVictoryIsReached;
       }
@@ -172,7 +173,7 @@ public class JoueurCoop extends Thread
 
     if(finished)
     {
-      this.coord.endGame(this.id);
+      this.coord.endGame(this.id, this.players, this.prod);
     }
   }
 
