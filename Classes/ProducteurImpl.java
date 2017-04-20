@@ -110,5 +110,16 @@
    }
 
 
+   /**
+   * Method : gameIsOver
+   * Param : int, winnerID - id of the winner
+   * Desc : Stop the client thread and shut down rmi server cleanly
+   * Return : void
+   **/
+   public void gameIsOver(String winnerID)
+   {
+     timer.cancel();
+     timer.purge();
+   }
 
  }
