@@ -25,7 +25,7 @@ public class Joueur
         isTbT = true;
       }
       JoueurImpl player = new JoueurImpl(args[2], Integer.parseInt(args[3]), args[4], isCoop, isTbT);
-      Naming.rebind("rmi://" + args[0] + ":" + args[1] + "/Prod_" + args[1], player);
+      Naming.rebind("rmi://" + args[0] + ":" + args[1] + "/" + args[1], player);
     }
     catch (RemoteException re) { System.out.println(re) ; }
     catch (MalformedURLException e) { System.out.println(e) ; }
