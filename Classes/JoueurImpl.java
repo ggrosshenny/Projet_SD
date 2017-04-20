@@ -26,6 +26,7 @@ public class JoueurImpl extends Agent implements IJoueur
 
   // Methods
   public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT)
+    throws RemoteException
   {
     super(id0, type0, coord);
 
@@ -51,11 +52,18 @@ public class JoueurImpl extends Agent implements IJoueur
     int i = 0;
     ProducteurImpl tempProducer;
     this.stock = new Ressource[Producteurs.length];
-    for(i=0; i<Producteurs.length; i++)
+    try
     {
-      tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
-      this.stock[i] = tempProducer.copyRsc();
+      for(i=0; i<Producteurs.length; i++)
+      {
+        tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
+        this.stock[i] = tempProducer.copyRsc();
+      }
     }
+    catch (NotBoundException re) { System.out.println(re) ; }
+    catch (RemoteException re) { System.out.println(re) ; }
+    catch (MalformedURLException e) { System.out.println(e) ; }
+
     this.watchers = new Joueur[Joueurs.length];
 
     // Create the player client object
