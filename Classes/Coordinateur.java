@@ -55,14 +55,19 @@ public class Coordinateur {
         
         try {
             int i;
+            int j = 0;
             for(i = 0; i < nb_players; i++){
 				Joueurs[i] = "rmi://" + args[0] + ":" + args[1] + "/" + args[4+i];
 			}
-			for(i = 0; i < nb_producers; i++){
+			for(i = 0; i <= nb_producers; i++){
 				try {
 					System.out.println("avant : " + "rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i]);
 					tempProd = (Producteur) Naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i]);
-					Producteurs[tempProd.getTypeOfRsc()][Producteurs[tempProd.getTypeOfRsc()].length] = "rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i];
+					System.out.println("avant : " + Producteurs[tempProd.getTypeOfRsc()].length + " , " );
+					while(Producteurs[tempProd.getTypeOfRsc()][j] != null){
+						j++;
+					}
+					Producteurs[tempProd.getTypeOfRsc()][j] = "rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i];
 					System.out.println("Apres");
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
@@ -74,7 +79,7 @@ public class Coordinateur {
 				System.out.println("JOUEURS : " + Joueurs[i]);
 			}
 			for(i = 0; i < Producteurs.length; i++){
-				for(int j = 0; j < Producteurs[i].length; j++){
+				for(j = 0; j < Producteurs[i].length; j++){
 					System.out.println("PRODUCTEURS : " + Producteurs[i][j]);
 				}
 			}
@@ -89,7 +94,7 @@ public class Coordinateur {
 				catch (MalformedURLException e) { System.out.println(e) ; }
 			}
 			for(i = 0; i < Producteurs.length; i++){
-				for(int j = 0; j < Producteurs[i].length; j++){
+				for(j = 0; j < Producteurs[i].length; j++){
 					
 					try {
 						if(Producteurs[i][j] != null)
