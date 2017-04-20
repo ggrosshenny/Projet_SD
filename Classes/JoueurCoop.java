@@ -1,6 +1,6 @@
 /**
 * Class : JoueurCoop
-* Extend :
+* Extend : Thread
 * Desc : Class to modelize the actions of player (taking ressource from
 *        produceur, watch everything, etc... ). Used in a thread from the
 *        server part of player (i.e. this is one variant of the client part of player).
@@ -10,7 +10,7 @@ import java.util.Random;
 import java.rmi.* ;
 import java.net.MalformedURLException ;
 
-public class JoueurCoop extends Thread
+public class JoueurCoop implements Runnable
 {
 
   // Attributes
@@ -52,7 +52,7 @@ public class JoueurCoop extends Thread
   {
     int i = 0;
     int j = 0;
-    int randomRessourceType = rand.nextInt(stock.length());
+    int randomRessourceType = rand.nextInt(stock.length);
     int rscToTake = 0;
     Producteur produ0;
 
@@ -71,7 +71,7 @@ public class JoueurCoop extends Thread
       // Seek for a producer of the given ressource type
       j=rand.nextInt(prod[i].length);
       produ0 = (Producteur)Naming.lookup(prod[i][j]);
-      stock[i] += produ0.takeRsc();
+      stock[i].addRessource(produ0.takeRsc());
       return produ0;
     }
     catch (NotBoundException re) { System.out.println(re) ; }
@@ -166,7 +166,7 @@ public class JoueurCoop extends Thread
       // Verifying if all objectives are completed
       for(i=0; i<stock.length; i++)
       {
-        finished = finished && stock[i].amountForVictoryIsReached;
+        finished = finished && stock[i].amountForVictoryIsReached();
       }
 
     }

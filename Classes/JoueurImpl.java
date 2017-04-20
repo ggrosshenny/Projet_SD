@@ -12,7 +12,7 @@ import java.net.* ;
 import java.rmi.* ;
 
 
-public class JoueurImpl implements Joueur
+public class JoueurImpl extends Agent implements IJoueur
 {
   // Attributes
   private Ressource[] stock;      // Stock of the player
@@ -21,6 +21,7 @@ public class JoueurImpl implements Joueur
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
   private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
   private Joueur[] watchers;      // List of players watching for ohter player's actions
+  private Runnable player;        // runnable of the thread
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
 
   // Methods
@@ -35,15 +36,40 @@ public class JoueurImpl implements Joueur
     this.isCoop = isCoop0;
     this.isTurnByTurn = isTbT;
 
-    JoueurCoop joueur;
 
+  }
+
+
+  /**
+   * Method : begin
+   * Param : void
+   * Desc : Start the thread
+   * Return : void
+   **/
+  public void begin(String[] Joueurs, String[][] Producteurs)
+  {
+    int i = 0;
+    ProducteurImpl tempProducer;
+    this.stock = new Ressource[Producteurs.length];
+    for(i=0; i<Producteurs.length; i++)
+    {
+      tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
+      this.stock[i] = tempProducer.copyRsc();
+    }
+    this.watchers = new Joueur[Joueurs.length];
+
+    // Create the player client object
     // Create the client part of the player (p2p)
     // Create the player object with the right behaiour
     if(!isTurnByTurn)
     {
       if(isCoop) // Cooperative player without turn waiting
       {
-        joueur = new JoueurCoop(id0, coord, 3);
+        JoueurCoop pl;
+        player = new JoueurCoop(id, coordinateur, 3);
+        pl = (JoueurCoop)player;
+        pl.setStock(this.stock);
+        pl.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
       }
       if(!isCoop) // Non-cooperative player without turn waiting
       {
@@ -61,30 +87,9 @@ public class JoueurImpl implements Joueur
         // TO DO
       }
     }
+
     // Creating thread for the client part of the player
-    playerClient = new Thread(joueur, id0 + "_threadClient");
-  }
-
-
-  /**
-   * Method : begin
-   * Param : void
-   * Desc : Start the thread
-   * Return : void
-   **/
-  public void begin(String[] Joueurs, String[][] Producteurs)
-  {
-    int i = 0;
-    ProducteurImpl tempProducer;
-    this.stock = new Producteur[Producteurs.length];
-    for(i=0; i<Producteurs.length; i++)
-    {
-      tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
-      this.stock[i] = tempProducer.copyRsc();
-    }
-    this.watchers = new Joueur[Joueurs.length];
-    playerClient.setStock(this.stock);
-    playerClient.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+    playerClient = new Thread(player, id + "_threadClient");
     playerClient.start();
   }
 
@@ -95,11 +100,34 @@ public class JoueurImpl implements Joueur
   * Desc : Stop the client thread and shut down rmi server cleanly
   * Return : void
   **/
-  public void gameIsOver(int winnerID)
+  public void gameIsOver(String winnerID)
   {
     System.out.println("The game is over. The winner is player " + winnerID);
-    playerClient.stopClient();
+    if(!isTurnByTurn)
+    {
+      if(isCoop) // Cooperative player without turn waiting
+      {
+        JoueurCoop pl = (JoueurCoop)player;
+        pl.stopClient();
+      }
+      if(!isCoop) // Non-cooperative player without turn waiting
+      {
+        //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
+      }
+    }
+    else
+    {
+      if(isCoop) // Cooperative player without turn waiting
+      {
+        // TO DO
+      }
+      if(!isCoop) // Non-cooperative player without turn waiting
+      {
+        // TO DO
+      }
+    }
   }
+
 
 
 
