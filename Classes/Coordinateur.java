@@ -56,12 +56,12 @@ public class Coordinateur {
         try {
             int i;
             for(i = 0; i < nb_players; i++){
-				Joueurs[i] = args[4+i];
+				Joueurs[i] = "rmi://" + args[0] + ":" + args[1] + "/" + args[4+i];
 			}
 			for(i = 0; i < nb_producers; i++){
 				try {
-					tempProd = (ProducteurImpl)Naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + args[5+i]);
-					Producteurs[tempProd.getTypeOfRsc()][Producteurs[tempProd.getTypeOfRsc()].length] = args[5+i];
+					tempProd = (ProducteurImpl)Naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i]);
+					Producteurs[tempProd.getTypeOfRsc()][Producteurs[tempProd.getTypeOfRsc()].length] = "rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i];
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
