@@ -44,12 +44,13 @@ public class Coordinateur {
 			System.exit(0) ;
 		}
 		
-		String[] Joueurs = null;
-		String[][] Producteurs = null;
+		
 		JoueurImpl tempJoueur = null;
 		ProducteurImpl tempProd = null;	
 		int nb_players = Integer.parseInt(args[2]);
 		int nb_producers = Integer.parseInt(args[3]);
+		String[] Joueurs = new String[nb_players];
+		String[][] Producteurs = new String[nb_producers];
 		
         
         try {
