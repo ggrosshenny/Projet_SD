@@ -8,6 +8,7 @@
 
 import java.rmi.* ;
 import java.net.MalformedURLException ;
+import java.util.Random;
 
 public class JoueurIndiv extends Thread
 {
@@ -168,7 +169,7 @@ public class JoueurIndiv extends Thread
 	// Informing the coordinator that every objectives have been completed
 	if(finished)
 	{
-      this.coord.endGame(this.id);
+      this.coord.endGame(this.id, this.players, this.prod);
 	}
   }
 }
