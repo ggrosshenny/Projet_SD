@@ -70,6 +70,7 @@ public class JoueurCoop implements Runnable
 
       // Seek for a producer of the given ressource type
       j=rand.nextInt(prod[i].length);
+      System.out.println(prod[i][j]);
       produ0 = (Producteur)Naming.lookup(prod[i][j]);
       stock[i].addRessource(produ0.takeRsc());
     }

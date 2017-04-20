@@ -56,6 +56,7 @@ public class JoueurImpl extends Agent implements IJoueur
     {
       for(i=0; i<Producteurs.length; i++)
       {
+        System.out.println("ProducteurImpl : producteur - " + Producteurs[i][0])
         tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
         this.stock[i] = tempProducer.copyRsc();
       }
