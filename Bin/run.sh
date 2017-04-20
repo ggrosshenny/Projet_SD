@@ -36,7 +36,7 @@ echo $PlayerIDList
 # Création des producteurs
 for i in $ProdIDList
 do
-  xterm -e java ProducteurServeur $1 $i $Coordinateur 1 50 25 5000 &
+  xterm -e java ProducteurServeur $1 $i $Coordinateur 0 50 25 5000 &
 done
 
 
