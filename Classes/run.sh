@@ -51,7 +51,8 @@ done
 # Création des joueurs
 for i in $PlayerIDList
 do
-  xterm -e java JoueurServ $1 $i &
+  Joueur machine port id type coord isCoop isTbT
+  xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 1 &
 done
 
 
