@@ -69,9 +69,12 @@ public class Coordinateur {
 				
 			}
 			
+			System.out.println("JOUEURS : " + Joueurs);
+			System.out.println("PRODUCTEURS : " + Producteurs);
+			
 			for(i = 0; i < Joueurs.length; i++){
 				try {
-					tempJoueur = (JoueurImpl)Naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + Joueurs[i]);
+					tempJoueur = (JoueurImpl)Naming.lookup(Joueurs[i]);
 					tempJoueur.begin(Joueurs, Producteurs);
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
@@ -82,13 +85,16 @@ public class Coordinateur {
 				for(int j = 0; j < Producteurs[i].length; j++){
 					
 					try {
-						tempProd = (ProducteurImpl)Naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + Producteurs[i][j]);
+						if(Producteurs[i][j] != null)
+							tempProd = (ProducteurImpl)Naming.lookup(Producteurs[i][j]);
 					}
 					catch (NotBoundException re) { System.out.println(re) ; }
 					catch (RemoteException re) { System.out.println(re) ; }
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
+			
+			
 			
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
