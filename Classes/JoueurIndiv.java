@@ -16,7 +16,8 @@ public class JoueurIndiv extends Thread
   // Attributes
   private String id;              // Id of the player who created the thread
   private Ressource[] stock;      // Stock of the player
-  private String[][] prod;        // Addresses of producers ([<type of ressource produced>][<producer>])
+  private String[][] prod;    
+  private String[] players;    // Addresses of producers ([<type of ressource produced>][<producer>])
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
   private Coordinateur coord;     // Coordinateur object
@@ -52,7 +53,7 @@ public class JoueurIndiv extends Thread
   {
     int i = 0;
     int j = 0;
-    int randomRessourceType = rand.nextInt(stock.length());
+    int randomRessourceType = rand.nextInt(stock.length);
     int rscToTake = 0;
     Producteur produ0;
 
@@ -69,9 +70,9 @@ public class JoueurIndiv extends Thread
       }
 
       // Seek for a producer of the given ressource type
-      j=rand.nextInt(prod[i].length());
+      j=rand.nextInt(prod[i].length);
       produ0 = (Producteur)Naming.lookup(prod[i][j]);
-      stock[i] += produ0.takeRsc();
+      stock[i].addRessource(produ0.takeRsc());
       return produ0;
     }
     catch (NotBoundException re) { System.out.println(re) ; }
@@ -90,7 +91,7 @@ public class JoueurIndiv extends Thread
    {
      try
      {
-       stock[produ.getType] += produ.takeRsc();
+       stock[produ.getTypeOfRsc()].addRessource(produ.takeRsc());
      }
      catch (NotBoundException re) { System.out.println(re) ; }
      catch (RemoteException re) { System.out.println(re) ; }
@@ -152,7 +153,7 @@ public class JoueurIndiv extends Thread
       // Seeking for producer and/or taking ressources
       if((produ == null) || (produ.getAmountRsc() <= 0))
       {
-        produ = takeRessourceFromNewProducer(produ);
+        produ = takeRessourceFromNewProducer();
       }
       else
       {
@@ -160,9 +161,9 @@ public class JoueurIndiv extends Thread
       }
 
       // Verifying if all objectives are completed
-      for(i=0; i<stock.length(); i++)
+      for(i=0; i<stock.length; i++)
       {
-        finished = finished && stock[i].amountForVictoryIsReached;
+        finished = finished && stock[i].amountForVictoryIsReached();
       }
 
     }
