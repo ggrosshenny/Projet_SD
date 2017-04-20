@@ -6,7 +6,7 @@ public class Joueur
 
   public static void main(String[] args)
   {
-    if(args.length != 6)
+    if(args.length != 7)
     {
       System.out.println("Usage : Joueur machine port id type coord isCoop isTbT") ;
       return;
@@ -25,7 +25,8 @@ public class Joueur
         isTbT = true;
       }
       JoueurImpl player = new JoueurImpl(args[2], Integer.parseInt(args[3]), args[4], isCoop, isTbT);
-      Naming.rebind("rmi://" + args[0] + ":" + args[1] + "/" + args[1], player);
+      Naming.rebind("rmi://" + args[0] + ":" + args[1] + "/" + args[2], player);
+      System.out.println(args[2] + " is ready...");
     }
     catch (RemoteException re) { System.out.println(re) ; }
     catch (MalformedURLException e) { System.out.println(e) ; }

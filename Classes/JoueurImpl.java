@@ -36,8 +36,7 @@ public class JoueurImpl extends Agent implements IJoueur
 
     this.isCoop = isCoop0;
     this.isTurnByTurn = isTbT;
-
-
+    System.out.println("Je suis un joueur contruit");
   }
 
 
@@ -50,15 +49,18 @@ public class JoueurImpl extends Agent implements IJoueur
   public void begin(String[] Joueurs, String[][] Producteurs)
   {
     int i = 0;
-    ProducteurImpl tempProducer;
+    Producteur tempProducer;
     this.stock = new Ressource[Producteurs.length];
     try
     {
       for(i=0; i<Producteurs.length; i++)
       {
-        System.out.println("ProducteurImpl : producteur - " + Producteurs[i][0]);
-        tempProducer = (ProducteurImpl)Naming.lookup(Producteurs[i][0]);
-        this.stock[i] = tempProducer.copyRsc();
+        if(Producteurs[i][0] != null)
+        {
+          System.out.println("ProducteurImpl : producteur - " + Producteurs[i][0]);
+          tempProducer = (Producteur)Naming.lookup(Producteurs[i][0]);
+          this.stock[i] = tempProducer.copyRsc();
+        }
       }
     }
     catch (NotBoundException re) { System.out.println(re) ; }
