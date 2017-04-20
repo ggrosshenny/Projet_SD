@@ -10,7 +10,7 @@ import java.rmi.* ;
 import java.net.MalformedURLException ;
 import java.util.Random;
 
-public class JoueurIndiv extends Thread
+public class JoueurIndiv implements Runnable
 {
 
   // Attributes
@@ -142,7 +142,7 @@ public class JoueurIndiv extends Thread
    *        are completed.
    * Return : void
    **/
-  void run()
+  public void run()
   {
     int i = 0;
     boolean finished = false;
