@@ -55,7 +55,7 @@ public class JoueurIndiv implements Runnable
     int j = 0;
     int randomRessourceType = rand.nextInt(stock.length);
     int rscToTake = 0;
-    Producteur produ0;
+    Producteur produ0 = null;
 
     try
     {
@@ -73,11 +73,13 @@ public class JoueurIndiv implements Runnable
       j=rand.nextInt(prod[i].length);
       produ0 = (Producteur)Naming.lookup(prod[i][j]);
       stock[i].addRessource(produ0.takeRsc());
-      return produ0;
+      
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
     catch (MalformedURLException e) { System.out.println(e) ; }
+    
+    return produ0;
   }
 
 
@@ -93,9 +95,7 @@ public class JoueurIndiv implements Runnable
      {
        stock[produ.getTypeOfRsc()].addRessource(produ.takeRsc());
      }
-     catch (NotBoundException re) { System.out.println(re) ; }
      catch (RemoteException re) { System.out.println(re) ; }
-     catch (MalformedURLException e) { System.out.println(e) ; }
    }
    
     /**
@@ -151,20 +151,23 @@ public class JoueurIndiv implements Runnable
     while(!finished && running)
     {
       // Seeking for producer and/or taking ressources
-      if((produ == null) || (produ.getAmountRsc() <= 0))
-      {
-        produ = takeRessourceFromNewProducer();
-      }
-      else
-      {
-        takeRessource(produ);
-      }
+      try {
+		if((produ == null) || (produ.getAmountRsc() <= 0))
+		{
+			produ = takeRessourceFromNewProducer();
+		}
+		else
+		{
+			takeRessource(produ);
+		}
 
-      // Verifying if all objectives are completed
-      for(i=0; i<stock.length; i++)
-      {
-        finished = finished && stock[i].amountForVictoryIsReached();
-      }
+		// Verifying if all objectives are completed
+		for(i=0; i<stock.length; i++)
+		{
+			finished = finished && stock[i].amountForVictoryIsReached();
+		}
+	  }      
+      catch (RemoteException re) { System.out.println(re) ; }
 
     }
 	// Informing the coordinator that every objectives have been completed
