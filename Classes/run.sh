@@ -8,18 +8,10 @@ then
     exit 1
 fi
 
-# Création d'une liste de 1 à nb producteurs pour créer ensuite les Producteurs
-ProdList=$(seq -w 1 $2)
-echo $ProdList
-
-# Création d'une liste de 1 à nb joueurs pour créer ensuite les Joueurs
-PlayerList=$(seq -w 1 $3)
-echo $PlayerList
-
 # Addresse du coordinateur
 Coordinateur="rmi://localhost:$1/coordinateur"
 
-# Création de la liste des ids des producteurs
+# Création de la liste des ids des producteurs allant de 1 à nbProd
 ProdIDList=' '
 
 for i in $(seq -w 1 $2)
@@ -30,7 +22,7 @@ done
 echo $ProdIDList
 
 
-# Création de la liste des ids des joueurs
+# Création de la liste des ids des joueurs allant de 1 à nbJoueurs
 PlayerIDList=' '
 
 for i in $(seq -w 1 $3)
@@ -51,7 +43,6 @@ done
 # Création des joueurs
 for i in $PlayerIDList
 do
-  Joueur machine port id type coord isCoop isTbT
   xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 1 &
 done
 
