@@ -50,7 +50,7 @@ public class Coordinateur {
 		int nb_players = Integer.parseInt(args[2]);
 		int nb_producers = Integer.parseInt(args[3]);
 		String[] Joueurs = new String[nb_players];
-		String[][] Producteurs = new String[nb_producers];
+		String[][] Producteurs = new String[nb_producers][nb_producers];
 		
         
         try {
