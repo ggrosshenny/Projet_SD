@@ -17,7 +17,7 @@ public class Coordinateur {
 		IJoueur tempJoueur = null;
 		Producteur tempProd = null;
 		
-		final CyclicBarrier gate = new CyclicBarrier(Integer.parseInt(args[2]));
+		
 		
 		IJoueur[] tab_joueurs = new IJoueur[Integer.parseInt(args[2])];
     try {
@@ -36,11 +36,13 @@ public class Coordinateur {
 						System.out.println("PRODUCTEURS : " + Coord.Producers[i][j]);
 				}
 			}
+			
+			Barriere gate = new Barriere(Integer.parseInt(args[2]));
 
 			for(i = 0; i < Coord.Players.length; i++){
 				try {
 					tab_joueurs[i] = (IJoueur)Naming.lookup(Coord.Players[i]);
-					tab_joueurs[i].begin(Coord.Players, Coord.Producers, gate);
+					tab_joueurs[i].begin(Coord.Players, Coord.Producers, gate.getBarrier());
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
