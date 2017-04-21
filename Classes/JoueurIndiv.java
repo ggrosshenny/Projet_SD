@@ -20,7 +20,7 @@ public class JoueurIndiv implements Runnable
   private String[] players;    // Addresses of producers ([<type of ressource produced>][<producer>])
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
-  private CoordinateurImpl coord;     // Coordinateur object
+  private ICoordinateur coord;     // Coordinateur object
   private boolean running;        // Boolean to know if the thread should stop or not
 
   // methods
@@ -33,7 +33,7 @@ public class JoueurIndiv implements Runnable
     this.running = true;
     try
     {
-      this.coord = (CoordinateurImpl)Naming.lookup(coord0);
+      this.coord = (ICoordinateur)Naming.lookup(coord0);
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
@@ -60,25 +60,35 @@ public class JoueurIndiv implements Runnable
     try
     {
       // seek for a ressource that we need
-      for(i=randomRessourceType; i==randomRessourceType-1; i=(i+1)%randomRessourceType)
+      for(i=0; i<stock.length; i++)
       {
-        if(!stock[i].amountForVictoryIsReached())
+        j = (randomRessourceType+i)%stock.length;
+        if((stock[j] != null) && (!stock[j].amountForVictoryIsReached()))
         {
-          rscToTake = i;
-          break;
+          rscToTake = j;
         }
       }
 
       // Seek for a producer of the given ressource type
-      j=rand.nextInt(prod[i].length);
-      produ0 = (Producteur)Naming.lookup(prod[i][j]);
-      stock[i].addRessource(produ0.takeRsc());
-      
+      int temp = prod[rscToTake].length-1;
+      if(temp > 0)
+      {
+        j=rand.nextInt(temp);
+      }
+      else
+      {
+        j=0;
+      }
+      do {
+        produ0 = (Producteur)Naming.lookup(prod[rscToTake][j]);
+        stock[j].addRessource(produ0.takeRsc());
+        j = (j+1)%prod[rscToTake].length;
+      } while (produ0 == null);
+
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
     catch (MalformedURLException e) { System.out.println(e) ; }
-    
     return produ0;
   }
 
@@ -164,7 +174,9 @@ public class JoueurIndiv implements Runnable
 		// Verifying if all objectives are completed
 		for(i=0; i<stock.length; i++)
 		{
-			finished = finished && stock[i].amountForVictoryIsReached();
+			if(stock[i] != null){
+				finished = finished && stock[i].amountForVictoryIsReached();
+			}
 		}
 	  }      
       catch (RemoteException re) { System.out.println(re) ; }
@@ -173,7 +185,11 @@ public class JoueurIndiv implements Runnable
 	// Informing the coordinator that every objectives have been completed
 	if(finished)
 	{
-      this.coord.endGame(this.id);
+	  try {
+		  System.out.println("J'ai fini !");
+          this.coord.endGame(this.id);
+	  }
+	  catch (RemoteException re) { System.out.println(re); }
 	}
   }
 }
