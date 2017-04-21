@@ -36,7 +36,7 @@ echo $PlayerIDList
 # Création des producteurs
 for i in $ProdIDList
 do
-  xterm -e java ProducteurServeur $1 $i $Coordinateur 0 50 25 5000 &
+  xterm -e java ProducteurServeur $1 $i $Coordinateur 0 40 25 5000 &
 done
 
 
@@ -50,7 +50,7 @@ done
 # Création du coordinateur de la partie
 echo "Création de la partie..."
 sleep 2
-java Coordinateur localhost $1 $2 $3 $PlayerIDList $ProdIDList $Coordinateur &
+java Coordinateur localhost $1 $3 $2 $PlayerIDList $ProdIDList $Coordinateur &
 echo "Done."
 
 exit 0
