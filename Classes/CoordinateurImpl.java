@@ -17,10 +17,9 @@
    public int nb_players;
    public int nb_producers;
    
-   public CoordinateurImpl(String[] args){
+   public CoordinateurImpl(String[] args)
 	   throws RemoteException
-	   {
-	   try { 
+   {
 			this.nb_players = Integer.parseInt(args[2]);
 			this.nb_producers = Integer.parseInt(args[3]);
 	   
@@ -50,12 +49,6 @@
 				catch (MalformedURLException e) { System.out.println(e) ; }
 
 			}
-	   }
-	   catch (NotBoundException re) { System.out.println(re) ; }
-	   catch (RemoteException re) { System.out.println(re) ; }
-	   catch (MalformedURLException e) { System.out.println(e) ; }
-	   }
-	   
    }
    
    public void endGame(String idJoueur){
