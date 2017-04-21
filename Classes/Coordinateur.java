@@ -1,6 +1,8 @@
 import java.rmi.*;
 import java.util.Random;
+import java.util.concurrent.CyclicBarrier;
 import java.net.MalformedURLException;
+import java.util.concurrent.BrokenBarrierException;
 
 public class Coordinateur {
 
@@ -14,6 +16,8 @@ public class Coordinateur {
 
 		IJoueur tempJoueur = null;
 		Producteur tempProd = null;
+		
+		final CyclicBarrier gate = new CyclicBarrier(Integer.parseInt(args[2]));
 		
 		IJoueur[] tab_joueurs = new IJoueur[Integer.parseInt(args[2])];
     try {
@@ -36,7 +40,7 @@ public class Coordinateur {
 			for(i = 0; i < Coord.Players.length; i++){
 				try {
 					tab_joueurs[i] = (IJoueur)Naming.lookup(Coord.Players[i]);
-					tab_joueurs[i].begin(Coord.Players, Coord.Producers);
+					tab_joueurs[i].begin(Coord.Players, Coord.Producers, gate);
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
@@ -46,6 +50,12 @@ public class Coordinateur {
 			for(i = 0; i < tab_joueurs.length; i++){
 				tab_joueurs[i].startGame();
 			}
+			/*
+			try {
+				gate.await();
+			}
+			
+			catch(BrokenBarrierException e){return;}*/
 			
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());

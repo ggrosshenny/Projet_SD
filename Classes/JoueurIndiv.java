@@ -9,6 +9,8 @@
 import java.rmi.* ;
 import java.net.MalformedURLException ;
 import java.util.Random;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.BrokenBarrierException;
 
 public class JoueurIndiv implements Runnable
 {
@@ -22,6 +24,7 @@ public class JoueurIndiv implements Runnable
   private Random rand;            // Used to create random int
   private ICoordinateur coord;     // Coordinateur object
   private boolean running;        // Boolean to know if the thread should stop or not
+  private CyclicBarrier gate;
 
   // methods
 
@@ -143,6 +146,17 @@ public class JoueurIndiv implements Runnable
   {
     this.stock = stock0;
   }
+  
+  /**
+   * Method : setGate
+   * Param : CyclicBarrier, gate - the barrier for the thread
+   * Desc : set the CyclicBarrier reference for the thread
+   * Return : void
+   **/
+  public void setGate(CyclicBarrier gate0)
+  {
+    this.gate = gate0;
+  }
 
   /**
    * Method : run
@@ -157,6 +171,14 @@ public class JoueurIndiv implements Runnable
     int i = 0;
     boolean finished = false;
     Producteur produ = null;
+    
+    // Waiting on starting blocks !
+    try
+    {
+      gate.await();
+    }
+    catch(InterruptedException e){return;}
+    catch(BrokenBarrierException e){return;}
 
     while(!finished && running)
     {
