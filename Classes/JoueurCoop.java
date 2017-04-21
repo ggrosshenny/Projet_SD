@@ -199,10 +199,17 @@ public class JoueurCoop implements Runnable
       try
       {
         System.out.println("J'ai fini !");
-        this.coord.endGame(this.id);
+        finished = this.coord.endGame(this.id);
       }
       catch (RemoteException re) { System.out.println(re) ; }
     }
+
+    // While to verify if we are winner or if we have to wait for another winner message.
+    // This activ waiting is not really bad, because its duration will not be longer than a few amount of ms
+    while(!finished && running)
+    {
+    }
+
   }
 
 

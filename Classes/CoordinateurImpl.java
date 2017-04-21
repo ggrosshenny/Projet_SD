@@ -17,10 +17,14 @@
    public int nb_players;
    public int nb_producers;
 
+   private boolean finished;
+
    public CoordinateurImpl(String[] args)
     throws RemoteException
    {
 	   {
+      this.finished = false;
+
 			this.nb_players = Integer.parseInt(args[2]);
 			this.nb_producers = Integer.parseInt(args[3]);
 
@@ -56,7 +60,6 @@
 
 		IJoueur tempJoueur;
 		Producteur tempProd;
-		boolean finished = false;
 		if(finished == false){
 			finished = true;
 			for(int i = 0; i < this.Players.length; i++){
