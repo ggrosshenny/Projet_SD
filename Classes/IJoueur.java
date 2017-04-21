@@ -14,6 +14,9 @@ public interface IJoueur extends Remote
   public void gameIsOver(String winnerID)
     throws RemoteException;
 
+  public void startGame()
+    throws RemoteException;
+
   public void begin(String[] Joueurs, String[][] Producteurs)
     throws RemoteException;
 }

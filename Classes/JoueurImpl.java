@@ -101,6 +101,17 @@ public class JoueurImpl extends Agent implements IJoueur
 
     // Creating thread for the client part of the player
     playerClient = new Thread(player, id + "_threadClient");
+  }
+
+
+  /**
+   * Method : startGame
+   * Param : void
+   * Desc : Start the thread. Synchronized start with all players.
+   * Return : void
+   **/
+  public void startGame()
+  {
     playerClient.start();
   }
 
