@@ -210,6 +210,7 @@ public class JoueurCoop implements Runnable
     {
     }
 
+    System.out.println("finished vaut :" + finished + " et running vaut : " + running);
   }
 
 

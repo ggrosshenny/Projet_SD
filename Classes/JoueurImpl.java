@@ -125,27 +125,34 @@ public class JoueurImpl extends Agent implements IJoueur
   public void gameIsOver(String winnerID)
   {
     System.out.println("The game is over. The winner is player " + winnerID);
-    if(!isTurnByTurn)
+    if(winnerID != this.id)
     {
-      if(isCoop) // Cooperative player without turn waiting
+      System.out.println("Je vais terminer le thread");
+      if(!isTurnByTurn)
       {
-        JoueurCoop pl = (JoueurCoop)player;
-        pl.stopClient();
+        if(isCoop) // Cooperative player without turn waiting
+        {
+          JoueurCoop pl = (JoueurCoop)player;
+          if(playerClient.isAlive())
+          {
+            pl.stopClient();
+          }
+        }
+        if(!isCoop) // Non-cooperative player without turn waiting
+        {
+          //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
+        }
       }
-      if(!isCoop) // Non-cooperative player without turn waiting
+      else
       {
-        //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
-      }
-    }
-    else
-    {
-      if(isCoop) // Cooperative player without turn waiting
-      {
-        // TO DO
-      }
-      if(!isCoop) // Non-cooperative player without turn waiting
-      {
-        // TO DO
+        if(isCoop) // Cooperative player without turn waiting
+        {
+          // TO DO
+        }
+        if(!isCoop) // Non-cooperative player without turn waiting
+        {
+          // TO DO
+        }
       }
     }
   }

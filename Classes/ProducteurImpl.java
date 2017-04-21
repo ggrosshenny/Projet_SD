@@ -37,7 +37,7 @@
      this.amountToTake = 3;
      toolkit = Toolkit.getDefaultToolkit();
      timer = new Timer();
-     timer.schedule(new ProductionTask(production),
+     timer.schedule(new ProductionTask(production, coord),
 	                  0,        //initial delay
 	                  timeBeforeProduction0);  //subsequent rate
    }
