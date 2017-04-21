@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject ;
 import java.rmi.RemoteException ;
 import java.net.* ;
 import java.rmi.* ;
+import java.util.concurrent.CyclicBarrier;
 
 
 public class JoueurImpl extends Agent implements IJoueur
@@ -45,7 +46,7 @@ public class JoueurImpl extends Agent implements IJoueur
    * Desc : Start the thread
    * Return : void
    **/
-  public void begin(String[] Joueurs, String[][] Producteurs)
+  public void begin(String[] Joueurs, String[][] Producteurs, CyclicBarrier gate)
   {
     int i = 0;
     Producteur tempProducer;

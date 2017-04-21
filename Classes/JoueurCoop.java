@@ -9,6 +9,8 @@
 import java.util.Random;
 import java.rmi.* ;
 import java.net.MalformedURLException ;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.BrokenBarrierException;
 
 public class JoueurCoop implements Runnable
 {
@@ -20,8 +22,9 @@ public class JoueurCoop implements Runnable
   private String[] players;       // Addresses of all players in the game
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
-  private ICoordinateur coord;     // Coordinateur object
+  private ICoordinateur coord;    // Coordinateur object
   private boolean running;        // Boolean to know if the thread should stop or not
+  private CyclicBarrier gate;     // CyclicBarrier for the thread
 
   // methods
 
@@ -129,6 +132,17 @@ public class JoueurCoop implements Runnable
     this.stock = stock0;
   }
 
+  /**
+   * Method : setGate
+   * Param : CyclicBarrier, gate - the barrier for the thread
+   * Desc : set the CyclicBarrier reference for the thread
+   * Return : void
+   **/
+  public void setGate(CyclicBarrier gate0)
+  {
+    this.gate = gate0;
+  }
+
 
   /**
    * Method : takeRessource
@@ -160,6 +174,14 @@ public class JoueurCoop implements Runnable
     int i = 0;
     boolean finished = false;
     Producteur produ = null;
+
+    // Waiting on starting blocks !
+    try
+    {
+      gate.await();
+    }
+    catch(InterruptedException e){return;}
+    catch(BrokenBarrierException e){return;}
 
     System.out.println("Je commence mon travail !");
 

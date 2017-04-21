@@ -3,8 +3,9 @@
  * Interface for JoueurImpl
  **/
 
- import java.rmi.Remote ;
- import java.rmi.RemoteException ;
+import java.rmi.Remote ;
+import java.rmi.RemoteException ;
+import java.util.concurrent.CyclicBarrier;
 
 public interface IJoueur extends Remote
 {
@@ -17,6 +18,6 @@ public interface IJoueur extends Remote
   public void startGame()
     throws RemoteException;
 
-  public void begin(String[] Joueurs, String[][] Producteurs)
+  public void begin(String[] Joueurs, String[][] Producteurs, CyclicBarrier gate)
     throws RemoteException;
 }
