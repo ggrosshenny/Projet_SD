@@ -24,7 +24,6 @@ public class JoueurCoop implements Runnable
   private Random rand;            // Used to create random int
   private ICoordinateur coord;    // Coordinateur object
   private boolean running;        // Boolean to know if the thread should stop or not
-  private CyclicBarrier gate;     // CyclicBarrier for the thread
 
   // methods
 
@@ -83,7 +82,7 @@ public class JoueurCoop implements Runnable
       }
       do {
         produ0 = (Producteur)Naming.lookup(prod[rscToTake][j]);
-        stock[j].addRessource(produ0.takeRsc());
+        stock[rscToTake].addRessource(produ0.takeRsc());
         j = (j+1)%prod[rscToTake].length;
       } while (produ0 == null);
 
@@ -132,17 +131,6 @@ public class JoueurCoop implements Runnable
     this.stock = stock0;
   }
 
-  /**
-   * Method : setGate
-   * Param : CyclicBarrier, gate - the barrier for the thread
-   * Desc : set the CyclicBarrier reference for the thread
-   * Return : void
-   **/
-  public void setGate(CyclicBarrier gate0)
-  {
-    this.gate = gate0;
-  }
-
 
   /**
    * Method : takeRessource
@@ -176,12 +164,20 @@ public class JoueurCoop implements Runnable
     Producteur produ = null;
 
     // Waiting on starting blocks !
+    // Sorry for active waiting...
     try
     {
-      gate.await();
+      coord.PlayerReady(); // Say to the coordinator that we are ready
     }
-    catch(InterruptedException e){return;}
-    catch(BrokenBarrierException e){return;}
+    catch (RemoteException re) { System.out.println(re) ; }
+
+    try
+    {
+      while(!coord.playerStart())
+      {
+      }
+    }
+    catch (RemoteException re) { System.out.println(re) ; }
 
     System.out.println("Je commence mon travail !");
 

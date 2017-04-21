@@ -15,18 +15,12 @@ import java.net.MalformedURLException;
 public class ProductionTask extends TimerTask
 {
   private Ressource prod;
-  private ICoordinateur coord;
+  private String coord;
 
   public ProductionTask(Ressource res, String coord0)
   {
     prod = res;
-    try
-    {
-      coord = (ICoordinateur)Naming.lookup(coord0);
-    }
-    catch (NotBoundException re) { System.out.println(re) ; }
-    catch (RemoteException re) { System.out.println(re) ; }
-    catch (MalformedURLException e) { System.out.println(e) ; }
+    this.coord = coord0;
   }
 
   public void run()
@@ -37,6 +31,13 @@ public class ProductionTask extends TimerTask
     }
     else
     {
+      try
+      {
+        ICoordinateur coordObject = (ICoordinateur)Naming.lookup(coord);
+      }
+      catch (NotBoundException re) { System.out.println(re) ; }
+      catch (RemoteException re) { System.out.println(re) ; }
+      catch (MalformedURLException e) { System.out.println(e) ; }
       // TO DO
       // Ajouter le fait qu'on puisse perdre la partie avec tous les producteurs vides.
     }

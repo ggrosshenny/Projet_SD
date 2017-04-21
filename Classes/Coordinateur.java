@@ -16,11 +16,12 @@ public class Coordinateur {
 
 		IJoueur tempJoueur = null;
 		Producteur tempProd = null;
-		
-		
-		
+
+
+
 		IJoueur[] tab_joueurs = new IJoueur[Integer.parseInt(args[2])];
     try {
+
 			CoordinateurImpl Coord = new CoordinateurImpl(args);
 			Naming.rebind(args[args.length - 1], Coord);
 
@@ -36,29 +37,17 @@ public class Coordinateur {
 						System.out.println("PRODUCTEURS : " + Coord.Producers[i][j]);
 				}
 			}
-			
-			Barriere gate = new Barriere(Integer.parseInt(args[2]));
 
 			for(i = 0; i < Coord.Players.length; i++){
 				try {
 					tab_joueurs[i] = (IJoueur)Naming.lookup(Coord.Players[i]);
-					tab_joueurs[i].begin(Coord.Players, Coord.Producers, gate.getBarrier());
+					tab_joueurs[i].begin(Coord.Players, Coord.Producers);
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
 				catch (MalformedURLException e) { System.out.println(e) ; }
 			}
-			
-			for(i = 0; i < tab_joueurs.length; i++){
-				tab_joueurs[i].startGame();
-			}
-			/*
-			try {
-				gate.await();
-			}
-			
-			catch(BrokenBarrierException e){return;}*/
-			
+
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();

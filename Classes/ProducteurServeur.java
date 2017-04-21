@@ -12,7 +12,7 @@ public class ProducteurServeur
     }
     try
     {
-      //                                                 id                         coord   rsc     timeBeforeProduction
+      //                                                 id        coord   rsc     timeBeforeProduction
       ProducteurImpl localProducer = new ProducteurImpl(args[1], args[2], Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]));
       Naming.rebind("rmi://localhost:" + args[0] + "/" + args[1], localProducer);
       System.out.println(args[1] + " is ready...");

@@ -11,4 +11,10 @@ public interface ICoordinateur extends Remote
 {
   public boolean endGame(String idJoueur)
     throws RemoteException;
+
+  public void PlayerReady()
+    throws RemoteException;
+
+  public boolean playerStart()
+    throws RemoteException;
 }

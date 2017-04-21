@@ -18,6 +18,8 @@
    public int nb_producers;
 
    private boolean finished;
+   private int nb_playersReady;
+   private boolean barrier;
 
    public CoordinateurImpl(String[] args)
     throws RemoteException
@@ -27,6 +29,8 @@
 
 			this.nb_players = Integer.parseInt(args[2]);
 			this.nb_producers = Integer.parseInt(args[3]);
+      this.nb_playersReady = 0;
+      this.barrier = false;
 
 			this.Players = new String[nb_players];
 			this.Producers = new String[nb_producers][nb_producers];
@@ -55,6 +59,22 @@
 			}
 	   }
    }
+
+   public synchronized void PlayerReady()
+   {
+     this.nb_playersReady++;
+     if(this.nb_playersReady == this.nb_players)
+     {
+       barrier = true;
+     }
+   }
+
+
+  public synchronized boolean playerStart()
+  {
+    return barrier;
+  }
+
 
    public synchronized boolean endGame(String idJoueur){
 
