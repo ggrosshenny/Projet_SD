@@ -9,6 +9,6 @@
 
 public interface ICoordinateur extends Remote
 {
-  public synchronized boolean endGame(String idJoueur)
+  public boolean endGame(String idJoueur)
     throws RemoteException;
 }
