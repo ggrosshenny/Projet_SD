@@ -20,7 +20,7 @@ public class JoueurIndiv implements Runnable
   private String[] players;    // Addresses of producers ([<type of ressource produced>][<producer>])
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
-  private Coordinateur coord;     // Coordinateur object
+  private CoordinateurImpl coord;     // Coordinateur object
   private boolean running;        // Boolean to know if the thread should stop or not
 
   // methods
@@ -33,7 +33,7 @@ public class JoueurIndiv implements Runnable
     this.running = true;
     try
     {
-      this.coord = (Coordinateur)Naming.lookup(coord0);
+      this.coord = (CoordinateurImpl)Naming.lookup(coord0);
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
@@ -173,7 +173,7 @@ public class JoueurIndiv implements Runnable
 	// Informing the coordinator that every objectives have been completed
 	if(finished)
 	{
-      this.coord.endGame(this.id, this.players, this.prod);
+      this.coord.endGame(this.id);
 	}
   }
 }

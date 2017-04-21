@@ -50,7 +50,7 @@ done
 # Création du coordinateur de la partie
 echo "Création de la partie..."
 sleep 2
-java Coordinateur localhost $1 $2 $3 $PlayerIDList $ProdIDList &
+java Coordinateur localhost $1 $2 $3 $PlayerIDList $ProdIDList $Coordinateur &
 echo "Done."
 
 exit 0
