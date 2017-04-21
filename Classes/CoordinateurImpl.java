@@ -52,32 +52,35 @@
 	   }
    }
 
-   public void endGame(String idJoueur){
+   public synchronized void endGame(String idJoueur){
 
 		IJoueur tempJoueur;
 		Producteur tempProd;
-
-		for(int i = 0; i < this.Players.length; i++){
-
-			try {
-				tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
-				tempJoueur.gameIsOver(idJoueur);
-			}
-			catch (NotBoundException re) { System.out.println(re) ; }
-			catch (RemoteException re) { System.out.println(re) ; }
-			catch (MalformedURLException e) { System.out.println(e) ; }
-
-		}
-		for(int i = 0; i < this.Producers.length; i++){
-			for(int j = 0; j < this.Producers[i].length; j++){
+		boolean finished = false;
+		if(finished == false){
+			finished = true;
+			for(int i = 0; i < this.Players.length; i++){
 
 				try {
-					tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
-					tempProd.gameIsOver(idJoueur);
+					tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
+					tempJoueur.gameIsOver(idJoueur);
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
 				catch (MalformedURLException e) { System.out.println(e) ; }
+
+			}
+			for(int i = 0; i < this.Producers.length; i++){
+				for(int j = 0; j < this.Producers[i].length; j++){
+
+					try {
+						tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
+						tempProd.gameIsOver(idJoueur);
+					}
+					catch (NotBoundException re) { System.out.println(re) ; }
+					catch (RemoteException re) { System.out.println(re) ; }
+					catch (MalformedURLException e) { System.out.println(e) ; }
+				}
 			}
 		}
 	}
