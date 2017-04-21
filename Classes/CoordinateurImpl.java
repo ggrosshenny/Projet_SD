@@ -52,7 +52,7 @@
 	   }
    }
 
-   public synchronized void endGame(String idJoueur){
+   public synchronized boolean endGame(String idJoueur){
 
 		IJoueur tempJoueur;
 		Producteur tempProd;
@@ -82,7 +82,9 @@
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
+			return true;
 		}
+		return false;
 	}
 
 }
