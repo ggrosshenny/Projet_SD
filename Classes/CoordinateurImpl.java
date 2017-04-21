@@ -77,8 +77,10 @@
 				for(int j = 0; j < this.Producers[i].length; j++){
 
 					try {
-						tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
-						tempProd.gameIsOver(idJoueur);
+						if(Producers[i][j] != null){
+							tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
+						 	tempProd.gameIsOver(idJoueur);
+						}
 					}
 					catch (NotBoundException re) { System.out.println(re) ; }
 					catch (RemoteException re) { System.out.println(re) ; }

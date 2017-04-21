@@ -28,7 +28,8 @@ public class Coordinateur {
 			}
 			for(i = 0; i < Coord.Producers.length; i++){
 				for(j = 0; j < Coord.Producers[i].length; j++){
-					System.out.println("PRODUCTEURS : " + Coord.Producers[i][j]);
+					if(Coord.Producers[i][j] != null)
+						System.out.println("PRODUCTEURS : " + Coord.Producers[i][j]);
 				}
 			}
 
