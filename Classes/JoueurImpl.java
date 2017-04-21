@@ -36,7 +36,6 @@ public class JoueurImpl extends Agent implements IJoueur
 
     this.isCoop = isCoop0;
     this.isTurnByTurn = isTbT;
-    System.out.println("Je suis un joueur contruit");
   }
 
 
@@ -60,6 +59,7 @@ public class JoueurImpl extends Agent implements IJoueur
           System.out.println("ProducteurImpl : producteur - " + Producteurs[i][0]);
           tempProducer = (Producteur)Naming.lookup(Producteurs[i][0]);
           this.stock[i] = tempProducer.copyRsc();
+          this.stock[i].setAmount(0);
         }
       }
     }

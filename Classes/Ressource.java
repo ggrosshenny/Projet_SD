@@ -56,6 +56,17 @@ public class Ressource implements Serializable
 
 
     /**
+     * Method : getAmountForVictory
+     * Param : void
+     * Desc : return the amountForVictory Attribute
+     * Return : int, amountForVictory Attribute
+     **/
+    synchronized int getAmountForVictory()
+    {
+      return this.amountForVictory;
+    }
+
+    /**
      * Method : addRessource
      * Param : int, amountAdded - amount to add to the current amount of the ressource
      * Desc : Add the specified amount to the total amount of the ressource
@@ -94,6 +105,18 @@ public class Ressource implements Serializable
       }
 
       return realAmountTaken; // Return the real amount that is taken from the totalAmount
+    }
+
+
+    /**
+     * Method : setAmount
+     * Param : int, newAmount - new amount of the ressource
+     * Desc : Set a new amount of the ressource that will overwrite the actual one
+     * Return : void
+     **/
+    synchronized void setAmount(int newAmount)
+    {
+      this.totalAmount = newAmount;
     }
 
 

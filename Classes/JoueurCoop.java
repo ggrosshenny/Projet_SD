@@ -20,7 +20,7 @@ public class JoueurCoop implements Runnable
   private String[] players;       // Addresses of all players in the game
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
-  private Coordinateur coord;     // Coordinateur object
+  private ICoordinateur coord;     // Coordinateur object
   private boolean running;        // Boolean to know if the thread should stop or not
 
   // methods
@@ -33,7 +33,7 @@ public class JoueurCoop implements Runnable
     this.running = true;
     try
     {
-      this.coord = (Coordinateur)Naming.lookup(coord0);
+      this.coord = (ICoordinateur)Naming.lookup(coord0);
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
@@ -59,19 +59,31 @@ public class JoueurCoop implements Runnable
     try
     {
       // seek for a ressource that we need
-      for(i=randomRessourceType; i==randomRessourceType-1; i=((i+1)%randomRessourceType))
+      for(i=0; i<stock.length; i++)
       {
-        if(!stock[i].amountForVictoryIsReached())
+        j = (randomRessourceType+i)%stock.length;
+        if((stock[j] != null) && (!stock[j].amountForVictoryIsReached()))
         {
-          rscToTake = i;
-          break;
+          rscToTake = j;
         }
       }
 
       // Seek for a producer of the given ressource type
-      j=rand.nextInt(prod[i].length);
-      produ0 = (Producteur)Naming.lookup(prod[i][j]);
-      stock[i].addRessource(produ0.takeRsc());
+      int temp = prod[rscToTake].length-1;
+      if(temp > 0)
+      {
+        j=rand.nextInt(temp);
+      }
+      else
+      {
+        j=0;
+      }
+      do {
+        produ0 = (Producteur)Naming.lookup(prod[rscToTake][j]);
+        stock[j].addRessource(produ0.takeRsc());
+        j = (j+1)%prod[rscToTake].length;
+      } while (produ0 == null);
+
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
@@ -149,6 +161,8 @@ public class JoueurCoop implements Runnable
     boolean finished = false;
     Producteur produ = null;
 
+    System.out.println("Je commence mon travail !");
+
     while(!finished && running)
     {
       try
@@ -166,16 +180,28 @@ public class JoueurCoop implements Runnable
       catch (RemoteException re) { System.out.println(re) ; }
 
       // Verifying if all objectives are completed
+      finished = true;
       for(i=0; i<stock.length; i++)
       {
-        finished = finished && stock[i].amountForVictoryIsReached();
+        if(stock[i] != null)
+        {
+          finished = finished && stock[i].amountForVictoryIsReached();
+        }
       }
 
+      System.out.println("Valeur de finished : " + finished + " et rsc : " + stock[0].getAmount() + "/" + stock[0].getAmountForVictory());
     }
+
+    System.out.println("Je sors du while !");
 
     if(finished)
     {
-      this.coord.endGame(this.id, this.players, this.prod);
+      try
+      {
+        System.out.println("J'ai fini !");
+        this.coord.endGame(this.id);
+      }
+      catch (RemoteException re) { System.out.println(re) ; }
     }
   }
 
