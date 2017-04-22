@@ -111,10 +111,10 @@ public class JoueurImpl extends Agent implements IJoueur
   * Desc : Stop the client thread and shut down rmi server cleanly
   * Return : void
   **/
-  public void gameIsOver(String winnerID)
+  public void gameIsOver(String message, String idWinner)
   {
-    System.out.println("The game is over. The winner is player " + winnerID);
-    if(winnerID != this.id)
+    System.out.println(message);
+    if(idWinner != this.id)
     {
       if(!isTurnByTurn)
       {

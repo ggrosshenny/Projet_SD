@@ -80,12 +80,17 @@ public class JoueurCoop implements Runnable
       {
         j=0;
       }
+
+      // Seek for an existing producer
       do {
-        produ0 = (Producteur)Naming.lookup(prod[rscToTake][j]);
-        stock[rscToTake].addRessource(produ0.takeRsc());
+        if(prod[rscToTake][j] != null)
+        {
+          produ0 = (Producteur)Naming.lookup(prod[rscToTake][j]);
+        }
         j = (j+1)%prod[rscToTake].length;
       } while (produ0 == null);
 
+      stock[rscToTake].addRessource(produ0.takeRsc());
     }
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
@@ -209,7 +214,7 @@ public class JoueurCoop implements Runnable
 
       try
       {
-        System.out.println("Valeur de finished : " + finished + " et rsc " + " : " + stock[0].getAmount() + "/" + stock[0].getAmountForVictory() + " (" + produ.getID() + ")");
+        System.out.println("Valeur de finished : " + finished + " et rsc " + " : " + stock[0].getAmount() + "/" + stock[produ.getTypeOfRsc()].getAmountForVictory() + " (" + produ.getID() + " : " + produ.getTypeOfRsc() + ")");
       }
       catch (RemoteException re) { System.out.println(re) ; }
     }
@@ -227,6 +232,15 @@ public class JoueurCoop implements Runnable
     // This activ waiting is not really bad, because its duration will not be longer than a few amount of ms
     while(!finished && running)
     {
+    }
+
+    System.out.println("J'ai pu collecter : ");
+    for(i=0; i<stock.length; i++)
+    {
+      if(stock[i] != null)
+      {
+        System.out.println("  ressource " + i + " : " + stock[i].getAmount());
+      }
     }
   }
 

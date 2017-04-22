@@ -2,9 +2,16 @@
 # Grosshenny Guillaume & Wasmer Audric
 
 # Verification des arguments
-if [ $# -ne 3 ]
+if [ $# -ne 7 ]
 then
-    echo "usage : $0 <port> <nbProd> <nbJoueurs>"
+    echo "usage : $0 <port> <nbProd> <nbJoueurs> <nbTypeOfRsc> <AmountAtStart> <AmountToTakeForVictory> <TimeBeforeProduction>"
+    exit 1
+fi
+
+# Verification des arguments 2
+if [ $2 -lt $4 ]
+then
+    echo "Warning, the number of different types of ressource is greater than the number of producers. Please, retry with a correct producers number or a correct type of ressource number."
     exit 1
 fi
 
@@ -38,11 +45,16 @@ echo $PlayerIDList
 
 
 # Création des producteurs
+rscType=-1
+rscTypeCtrlList=' '
 for i in $ProdIDList
 do
-  xterm -e java ProducteurServeur $1 $i $Coordinateur 0 40 25 5000 &
+  rscType=$((($rscType+1)%$4))
+  rscTypeCtrlList="$rscTypeCtrlList $rscType"
+  xterm -e java ProducteurServeur $1 $i $Coordinateur $rscType $5 $6 $7 &
 done
 
+echo $rscTypeCtrlList
 
 # Création des joueurs
 for i in $PlayerIDList

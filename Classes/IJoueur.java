@@ -12,7 +12,7 @@ public interface IJoueur extends Remote
   //public int steal(int rscType, int amount)
   //  throws RemoteException;
 
-  public void gameIsOver(String winnerID)
+  public void gameIsOver(String message, String idWinner)
     throws RemoteException;
 
   public void begin(String[] Joueurs, String[][] Producteurs)

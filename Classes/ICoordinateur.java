@@ -17,4 +17,7 @@ public interface ICoordinateur extends Remote
 
   public boolean playerStart()
     throws RemoteException;
+
+  public void ProducerEmpty()
+    throws RemoteException;
 }

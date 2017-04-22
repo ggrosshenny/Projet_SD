@@ -16,6 +16,7 @@ public class ProductionTask extends TimerTask
 {
   private Ressource prod;
   private String coord;
+  private ICoordinateur coordObject;
 
   public ProductionTask(Ressource res, String coord0)
   {
@@ -33,13 +34,13 @@ public class ProductionTask extends TimerTask
     {
       try
       {
-        ICoordinateur coordObject = (ICoordinateur)Naming.lookup(coord);
+        coordObject = (ICoordinateur)Naming.lookup(coord);
+        coordObject.ProducerEmpty();
       }
       catch (NotBoundException re) { System.out.println(re) ; }
       catch (RemoteException re) { System.out.println(re) ; }
       catch (MalformedURLException e) { System.out.println(e) ; }
-      // TO DO
-      // Ajouter le fait qu'on puisse perdre la partie avec tous les producteurs vides.
+
     }
   }
 }

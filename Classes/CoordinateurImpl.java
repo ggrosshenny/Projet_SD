@@ -19,6 +19,7 @@
 
    private boolean finished;
    private int nb_playersReady;
+   private int nb_producersEmpty;
    private boolean barrier;
 
    public CoordinateurImpl(String[] args)
@@ -76,17 +77,63 @@
   }
 
 
+  public synchronized void ProducerEmpty()
+  {
+    IJoueur tempJoueur;
+		Producteur tempProd;
+    String message;
+
+    this.nb_producersEmpty++;
+
+    if((this.nb_producersEmpty == this.nb_producers) && (!finished))
+    {
+      finished = true;
+      message = new String("All producers are empty. The game end without winner.");
+      for(int i = 0; i < this.Players.length; i++)
+      {
+				try
+        {
+					tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
+					tempJoueur.gameIsOver(message, "none");
+				}
+				catch (NotBoundException re) { System.out.println(re) ; }
+				catch (RemoteException re) { System.out.println(re) ; }
+				catch (MalformedURLException e) { System.out.println(e) ; }
+
+			}
+			for(int i = 0; i < this.Producers.length; i++)
+      {
+				for(int j = 0; j < this.Producers[i].length; j++)
+        {
+					try
+          {
+						if(Producers[i][j] != null)
+            {
+							tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
+						 	tempProd.gameIsOver(message);
+						}
+					}
+					catch (NotBoundException re) { System.out.println(re) ; }
+					catch (RemoteException re) { System.out.println(re) ; }
+					catch (MalformedURLException e) { System.out.println(e) ; }
+				}
+			}
+    }
+  }
+
+
    public synchronized boolean endGame(String idJoueur){
 
 		IJoueur tempJoueur;
 		Producteur tempProd;
 		if(finished == false){
 			finished = true;
+      String message = new String("The game is over, the winner is : " + idJoueur);
 			for(int i = 0; i < this.Players.length; i++){
 
 				try {
 					tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
-					tempJoueur.gameIsOver(idJoueur);
+					tempJoueur.gameIsOver(message, idJoueur);
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
@@ -99,7 +146,7 @@
 					try {
 						if(Producers[i][j] != null){
 							tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
-						 	tempProd.gameIsOver(idJoueur);
+						 	tempProd.gameIsOver(message);
 						}
 					}
 					catch (NotBoundException re) { System.out.println(re) ; }

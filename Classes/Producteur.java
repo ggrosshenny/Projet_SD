@@ -15,7 +15,7 @@ public interface Producteur extends Remote
   public int getAmountRsc()
     throws RemoteException;
 
-  public void gameIsOver(String winnerID)
+  public void gameIsOver(String message)
     throws RemoteException;
 
   public Ressource copyRsc()

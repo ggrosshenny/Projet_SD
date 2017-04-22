@@ -128,8 +128,9 @@
    * Desc : Stop the client thread and shut down rmi server cleanly
    * Return : void
    **/
-   public void gameIsOver(String winnerID)
+   public void gameIsOver(String message)
    {
+     System.out.println(message);
      timer.cancel();
      timer.purge();
    }
