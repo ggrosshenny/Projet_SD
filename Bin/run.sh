@@ -8,6 +8,10 @@ then
     exit 1
 fi
 
+# Creation du rmi registry
+
+rmiregistry &
+
 # Addresse du coordinateur
 Coordinateur="rmi://localhost:$1/coordinateur"
 
@@ -48,7 +52,7 @@ done
 
 
 # Création du coordinateur de la partie
-echo "Création de la partie..."
+echo "Creating game... Please hold on."
 sleep 2
 java Coordinateur localhost $1 $3 $2 $PlayerIDList $ProdIDList $Coordinateur &
 echo "Done."
