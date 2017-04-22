@@ -11,6 +11,9 @@ import java.rmi.* ;
 import java.net.MalformedURLException ;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.awt.Toolkit;
 
 public class JoueurCoop implements Runnable
 {
@@ -23,7 +26,10 @@ public class JoueurCoop implements Runnable
   private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
   private Random rand;            // Used to create random int
   private ICoordinateur coord;    // Coordinateur object
+  private String coordAddr;       // Addr of coordinateur
   private boolean running;        // Boolean to know if the thread should stop or not
+  public Toolkit toolkit;         // Toolkit used by TimerTask
+  public Timer timer;             // Timer used to shedule the task
 
   // methods
 
@@ -33,6 +39,8 @@ public class JoueurCoop implements Runnable
     this.amountToTake = amountToTake0;
     this.rand = new Random();
     this.running = true;
+    this.toolkit = Toolkit.getDefaultToolkit();
+    this.timer = new Timer();
     try
     {
       this.coord = (ICoordinateur)Naming.lookup(coord0);
@@ -183,6 +191,11 @@ public class JoueurCoop implements Runnable
       }
     }
     catch (RemoteException re) { System.out.println(re) ; }
+
+    // Starting log system that will give the stock status each 1000 ms
+    timer.schedule(new setLogPlayerTask(stock, coordAddr, 1000, this.id),
+                   0,        //initial delay
+                   1000);  //subsequent rate
 
     System.out.println("Je commence mon travail !");
 

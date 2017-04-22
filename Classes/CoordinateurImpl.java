@@ -144,6 +144,19 @@
   }
 
 
+  /**
+   * Method : setLog
+   * Param : String, id - the id of the player calling the Method
+   * Param : int[], stock - the stock status of the player
+   * Desc : Stock the log on the arrayList 3D
+   * Return : void
+   **/
+   public synchronized void setLog(String id, int[] Stock)
+   {
+     // TO DO
+   }
+
+
    public synchronized boolean endGame(String idJoueur){
 
 		IJoueur tempJoueur;

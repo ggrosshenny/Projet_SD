@@ -1,0 +1,50 @@
+/**
+* Class : setLogPlayerTask
+* Extend : TimerTask
+* Desc : Give informations about player actions at fixed time
+**/
+
+import java.rmi.*;
+import java.util.TimerTask;
+import java.net.MalformedURLException;
+
+public class setLogPlayerTask extends TimerTask
+{
+  private Ressource[] stock;
+  private int[] stockStatus;
+  private int time;
+  private int timer;
+  private String id;
+  private ICoordinateur coordObject;
+
+  public setLogPlayerTask(Ressource[] stock0, String coord0, int timer0, String id0)
+  {
+    try
+    {
+      coordObject = (ICoordinateur)Naming.lookup(coord0);
+    }
+    catch (NotBoundException re) { System.out.println(re) ; }
+    catch (RemoteException re) { System.out.println(re) ; }
+    catch (MalformedURLException e) { System.out.println(e) ; }
+
+    this.stock = stock0;
+    this.time = 0;
+    this.timer = timer0;
+    this.id = id0;
+  }
+
+  public void run()
+  {
+    int i = 0;
+    this.time += this.timer;
+    for(i=0; i<stock.length; i++)
+    {
+      stockStatus[i] = stock[i].getAmount();
+    }
+    try
+    {
+      coordObject.setLog(this.id, stockStatus);
+    }
+    catch (RemoteException re) { System.out.println(re) ; }
+  }
+}

@@ -6,9 +6,9 @@ public class Joueur
 
   public static void main(String[] args)
   {
-    if(args.length != 7)
+    if(args.length != 8)
     {
-      System.out.println("Usage : Joueur machine port id type coord isCoop isTbT") ;
+      System.out.println("Usage : Joueur machine port id type coord isCoop isTbT nb_typeRsc") ;
       return;
     }
     try
@@ -24,7 +24,7 @@ public class Joueur
       {
         isTbT = true;
       }
-      JoueurImpl player = new JoueurImpl(args[2], Integer.parseInt(args[3]), args[4], isCoop, isTbT);
+      JoueurImpl player = new JoueurImpl(args[2], Integer.parseInt(args[3]), args[4], isCoop, isTbT, Integer.parseInt(args[7]));
       Naming.rebind("rmi://" + args[0] + ":" + args[1] + "/" + args[2], player);
       System.out.println(args[2] + " is ready...");
     }

@@ -24,9 +24,10 @@ public class JoueurImpl extends Agent implements IJoueur
   private Joueur[] watchers;      // List of players watching for ohter player's actions
   private Runnable player;        // runnable of the thread
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
+  private int nb_TypeRsc;          // Number of different types of ressource
 
   // Methods
-  public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT)
+  public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT, int nb_TypeRsc0)
     throws RemoteException
   {
     super(id0, type0, coord);
@@ -37,6 +38,7 @@ public class JoueurImpl extends Agent implements IJoueur
 
     this.isCoop = isCoop0;
     this.isTurnByTurn = isTbT;
+    this.nb_TypeRsc = nb_TypeRsc0;
   }
 
 
@@ -50,10 +52,10 @@ public class JoueurImpl extends Agent implements IJoueur
   {
     int i = 0;
     Producteur tempProducer;
-    this.stock = new Ressource[Producteurs.length];
+    this.stock = new Ressource[this.nb_TypeRsc];
     try
     {
-      for(i=0; i<Producteurs.length; i++)
+      for(i=0; i<this.nb_TypeRsc; i++)
       {
         if(Producteurs[i][0] != null)
         {
