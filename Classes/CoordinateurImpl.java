@@ -77,6 +77,14 @@
   }
 
 
+  /**
+   * Method : ProducerEmpty
+   * Param : void
+   * Desc : This method is called oach time a producer is empty. If all producers had called this
+   *        method, then the coordinateur verify that no player has completed all its
+   *        objectives and notify to every agent that the game is ended.
+   * Return : void
+   **/
   public synchronized void ProducerEmpty()
   {
     IJoueur tempJoueur;
@@ -87,9 +95,23 @@
 
     if((this.nb_producersEmpty == this.nb_producers) && (!finished))
     {
+      // Wait for a player notification
+      try {
+          Thread.sleep(2000);
+      } catch(InterruptedException ex) {
+          Thread.currentThread().interrupt();
+      }
+
+      // If after this time a player won, cancel the action.
+      if(finished)
+      {
+        return;
+      }
+
+      // Else notify everyone that the game is ended and the reason why.
       finished = true;
       message = new String("All producers are empty. The game end without winner.");
-      for(int i = 0; i < this.Players.length; i++)
+      for(int i = 0; i < this.Players.length; i++) // tell to all players that game is ended
       {
 				try
         {
@@ -101,7 +123,7 @@
 				catch (MalformedURLException e) { System.out.println(e) ; }
 
 			}
-			for(int i = 0; i < this.Producers.length; i++)
+			for(int i = 0; i < this.Producers.length; i++) // Tell to all producers that game is ended
       {
 				for(int j = 0; j < this.Producers[i].length; j++)
         {
