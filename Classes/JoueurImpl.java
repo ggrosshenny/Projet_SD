@@ -57,7 +57,6 @@ public class JoueurImpl extends Agent implements IJoueur
       {
         if(Producteurs[i][0] != null)
         {
-          System.out.println("ProducteurImpl : producteur - " + Producteurs[i][0]);
           tempProducer = (Producteur)Naming.lookup(Producteurs[i][0]);
           this.stock[i] = tempProducer.copyRsc();
           this.stock[i].setAmount(0);
@@ -117,7 +116,6 @@ public class JoueurImpl extends Agent implements IJoueur
     System.out.println("The game is over. The winner is player " + winnerID);
     if(winnerID != this.id)
     {
-      System.out.println("Je vais terminer le thread");
       if(!isTurnByTurn)
       {
         if(isCoop) // Cooperative player without turn waiting

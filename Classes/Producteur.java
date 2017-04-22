@@ -9,6 +9,9 @@ public interface Producteur extends Remote
   public int getTypeOfRsc()
     throws RemoteException;
 
+  public String getID()
+    throws RemoteException;
+
   public int getAmountRsc()
     throws RemoteException;
 

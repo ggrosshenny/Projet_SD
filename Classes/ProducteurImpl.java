@@ -76,6 +76,18 @@
 
 
   /**
+   * Method : getID
+   * Param : void
+   * Desc : return the id of the producer
+   * Return : String, id of the producer
+   **/
+  public String getID()
+  {
+    return this.id;
+  }
+
+
+  /**
    * Method : getAmountRsc
    * Param : void
    * Desc : Return the actual amount of the Ressource object

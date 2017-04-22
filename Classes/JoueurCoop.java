@@ -207,16 +207,17 @@ public class JoueurCoop implements Runnable
         }
       }
 
-      System.out.println("Valeur de finished : " + finished + " et rsc : " + stock[0].getAmount() + "/" + stock[0].getAmountForVictory());
+      try
+      {
+        System.out.println("Valeur de finished : " + finished + " et rsc " + " : " + stock[0].getAmount() + "/" + stock[0].getAmountForVictory() + " (" + produ.getID() + ")");
+      }
+      catch (RemoteException re) { System.out.println(re) ; }
     }
-
-    System.out.println("Je sors du while !");
 
     if(finished)
     {
       try
       {
-        System.out.println("J'ai fini !");
         finished = this.coord.endGame(this.id);
       }
       catch (RemoteException re) { System.out.println(re) ; }
@@ -227,8 +228,6 @@ public class JoueurCoop implements Runnable
     while(!finished && running)
     {
     }
-
-    System.out.println("finished vaut :" + finished + " et running vaut : " + running);
   }
 
 
