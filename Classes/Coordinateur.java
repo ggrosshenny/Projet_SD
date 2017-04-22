@@ -3,6 +3,7 @@ import java.util.Random;
 import java.util.concurrent.CyclicBarrier;
 import java.net.MalformedURLException;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.ArrayList;
 
 public class Coordinateur {
 
@@ -53,4 +54,7 @@ public class Coordinateur {
             e.printStackTrace();
         }
     }
+    
+    ArrayList[] p = new ArrayList[1];
+    p[0] = new ArrayList<String>();
 }
