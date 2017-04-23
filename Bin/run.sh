@@ -59,7 +59,7 @@ echo $rscTypeCtrlList
 # Création des joueurs
 for i in $PlayerIDList
 do
-  xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 1 &
+  xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 1 $4 &
 done
 
 

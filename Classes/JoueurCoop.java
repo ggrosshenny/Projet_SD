@@ -39,8 +39,9 @@ public class JoueurCoop implements Runnable
     this.amountToTake = amountToTake0;
     this.rand = new Random();
     this.running = true;
-    this.toolkit = Toolkit.getDefaultToolkit();
-    this.timer = new Timer();
+    //this.toolkit = Toolkit.getDefaultToolkit();
+    //this.timer = new Timer();
+
     try
     {
       this.coord = (ICoordinateur)Naming.lookup(coord0);
@@ -191,12 +192,12 @@ public class JoueurCoop implements Runnable
       }
     }
     catch (RemoteException re) { System.out.println(re) ; }
-
+    /**
     // Starting log system that will give the stock status each 1000 ms
     timer.schedule(new setLogPlayerTask(stock, coordAddr, 1000, this.id),
                    0,        //initial delay
                    1000);  //subsequent rate
-
+    **/
     System.out.println("Je commence mon travail !");
 
     while(!finished && running)

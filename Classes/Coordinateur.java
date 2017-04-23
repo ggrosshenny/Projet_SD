@@ -53,8 +53,13 @@ public class Coordinateur {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
         }
+        /*
+        ArrayList<ArrayList<String>> array2D = new ArrayList<ArrayList<String>>();
+        ArrayList<String> array = new ArrayList<String>();
+        String t = new String("test");
+        array.add(t);
+        array2D.add(array);
+        */
     }
-    
-    ArrayList[] p = new ArrayList[1];
-    p[0] = new ArrayList<String>();
+
 }
