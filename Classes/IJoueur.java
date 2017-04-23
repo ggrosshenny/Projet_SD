@@ -17,4 +17,10 @@ public interface IJoueur extends Remote
 
   public void begin(String[] Joueurs, String[][] Producteurs)
     throws RemoteException;
+
+  public void punish()
+    throws RemoteException;
+
+  public int steal(String id, int rscType, int amount)
+    throws RemoteException;
 }

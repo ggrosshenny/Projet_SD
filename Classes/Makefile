@@ -9,7 +9,7 @@
 JFLAGS = -g
 JC = javac
 
-default: 
+default:
 	$(JC) $(JFLAGS) *.java
 	cp *.class ../Bin
 	rm *.class
@@ -27,3 +27,5 @@ joueur:
 clean:
 	rm ../Bin/*.class
 
+cleanLogs:
+	rm ../Bin/log_player_*

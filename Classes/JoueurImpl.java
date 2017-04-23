@@ -17,7 +17,7 @@ public class JoueurImpl extends Agent implements IJoueur
 {
   // Attributes
   private Ressource[] stock;      // Stock of the player
-  private String[][] prod;        // Addresses of producers ([<type of ressource produced>][<producer>])
+  private String[] players;       // Addresses of all players
   private boolean isTurnByTurn;   // Boolean to know if we are in tur by turn mod
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
   private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
@@ -53,6 +53,7 @@ public class JoueurImpl extends Agent implements IJoueur
     int i = 0;
     Producteur tempProducer;
     this.stock = new Ressource[this.nb_TypeRsc];
+    this.players = Joueurs;
     try
     {
       for(i=0; i<this.nb_TypeRsc; i++)
@@ -79,7 +80,7 @@ public class JoueurImpl extends Agent implements IJoueur
       if(isCoop) // Cooperative player without turn waiting
       {
         JoueurCoop pl;
-        player = new JoueurCoop(id, coordinateur, 3);
+        player = new JoueurCoop(this, id, coordinateur, 3);
         pl = (JoueurCoop)player;
         pl.setStock(this.stock);
         pl.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
@@ -91,11 +92,11 @@ public class JoueurImpl extends Agent implements IJoueur
     }
     else
     {
-      if(isCoop) // Cooperative player without turn waiting
+      if(isCoop) // Cooperative player with turn waiting
       {
         // TO DO
       }
-      if(!isCoop) // Non-cooperative player without turn waiting
+      if(!isCoop) // Non-cooperative player with turn waiting
       {
         // TO DO
       }
@@ -135,11 +136,11 @@ public class JoueurImpl extends Agent implements IJoueur
       }
       else
       {
-        if(isCoop) // Cooperative player without turn waiting
+        if(isCoop) // Cooperative player with turn waiting
         {
           // TO DO
         }
-        if(!isCoop) // Non-cooperative player without turn waiting
+        if(!isCoop) // Non-cooperative player with turn waiting
         {
           // TO DO
         }
@@ -154,10 +155,67 @@ public class JoueurImpl extends Agent implements IJoueur
    * Method : steal
    * Param : int, rscType - the kind of ressource that is stolen
    * Param : int, amount - the amount of ressource that is stolen
-   * Desc : Method that modelize the moment when the palyer is stolen by someone
+   * Desc : Method that modelize the moment when the player is stolen by someone
    * Return : int, the stolen amount of the specified ressource
    **/
-   // TO DO
+   public synchronized int steal(String id, int rscType, int amount)
+   {
+     if(!isWatcher)
+     {
+       return stock[rscType].rmvRessource(amount);
+     }
+     else
+     {
+       int idPlayer = Integer.parseInt(id.substring(id.length()-1, id.length()));
+       IJoueur playerTryingToSteal;
+       try
+       {
+         playerTryingToSteal = (IJoueur)Naming.lookup(players[idPlayer]);
+         playerTryingToSteal.punish();
+       }
+       catch (NotBoundException re) { System.out.println(re) ; }
+       catch (RemoteException re) { System.out.println(re) ; }
+       catch (MalformedURLException e) { System.out.println(e) ; }
+       return 0;
+     }
+   }
+
+
+   /**
+   * Method : punish
+   * Param : void
+   * Desc : call punishement on the thread when called by another player
+   * Return : void
+   **/
+   public void punish()
+   {
+     if(!isTurnByTurn)
+     {
+       if(isCoop) // Cooperative player without turn waiting
+       {
+         JoueurCoop pl = (JoueurCoop)player;
+         if(playerClient.isAlive())
+         {
+           pl.punishement();
+         }
+       }
+       if(!isCoop) // Non-cooperative player without turn waiting
+       {
+         //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
+       }
+     }
+     else
+     {
+       if(isCoop) // Cooperative player with turn waiting
+       {
+         // TO DO
+       }
+       if(!isCoop) // Non-cooperative player with turn waiting
+       {
+         // TO DO
+       }
+     }
+   }
 
 
 }
