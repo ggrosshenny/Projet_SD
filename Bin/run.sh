@@ -66,7 +66,7 @@ done
 # Création du coordinateur de la partie
 echo "Creating game... Please hold on."
 sleep 2
-java Coordinateur localhost $1 $3 $2 $PlayerIDList $ProdIDList $Coordinateur &
+java Coordinateur localhost $1 $3 $2 $PlayerIDList $ProdIDList $Coordinateur $4 &
 echo "Done."
 
 exit 0
