@@ -6,16 +6,15 @@ then
 	exit 1
 fi
 
-filename='log_file_'
-logfilename=${filename}$1
+filename='log_player_'
+logfilename=${filename}$1".bat"
 nbRsc=$2
 
 if [ -f $logfilename ]
 then
-	cat << __EOF | gnuplot 
-	set term canvas mousing size 500,500 
-	plot <$logfilename> u 1:2 with lines lt IDX+1 
-	__EOF
+	outputfile=${filename}$1".png"
+	echo "set term png; set output '"${outputfile}"'; plot for [IDX=0:"$nbRsc"] '"${logfilename}"' index IDX u 1:2 with lines lt IDX+1" | gnuplot
+	see ${outputfile}
 else
 	echo 'File not found'
 	exit 1
