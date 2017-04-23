@@ -218,6 +218,8 @@
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
+			LogWriter logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 10);
+			logEntity.writeLogFiles();
 			return true;
 		}
 		return false;
