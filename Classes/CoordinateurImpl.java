@@ -118,7 +118,7 @@
     {
       // Wait for a player notification
       try {
-          Thread.sleep(1000);
+          Thread.sleep(200);
       } catch(InterruptedException ex) {
           Thread.currentThread().interrupt();
       }
