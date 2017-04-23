@@ -6,55 +6,61 @@ import java.util.ArrayList;
 public class LogWriter {
 	
 	//Attributes
-	private ArrayList<String>[][][] players_logs;		// String array containing the logs of every player
-	private ArrayList<String>[][] producers_logs;	// String array containing the logs of every producers
+	private ArrayList<ArrayList<ArrayList<String>>> players_logs;		// String array containing the logs of every player
+	private ArrayList<ArrayList<String>> producers_logs;				// String array containing the logs of every producers
 	private int timeBetweenTicks;
 	
 	
 	//Constructor
-	public LogWriter ( ArrayList<String>[][][] playersLogs, ArrayList<String>[][] prodLogs, int timer){
+	public LogWriter ( ArrayList<ArrayList<ArrayList<String>>> playersLogs, ArrayList<ArrayList<String>> prodLogs, int timer){
 	
+			players_logs = new ArrayList<ArrayList<ArrayList<String>>>();
 			players_logs = playersLogs;
+			producers_logs = new ArrayList<ArrayList<String>>();
 			producers_logs = prodLogs;
+			
+			timeBetweenTicks = timer;
 		
 	}
 	
 	public void writeLogFiles(){
 		
 		PrintWriter logfile;
-		
 		// For each player create a new log file
-		for(int i = 0; i < players_logs.length; i++) {			
+		for(int i = 0; i < players_logs.size(); i++) {			
 			try {				
-				logfile = new PrintWriter("log_player_"+i, "UTF-8");
+				logfile = new PrintWriter("log_player_"+(i+1), "UTF-8");
 				// For each ressource create a block
-				for(int j = 0; j < players_logs[i].length; j++){
+				for(int j = 0; j < players_logs.get(i).size(); j++){
 					logfile.println("# block rsc " + j + " :");
 					
-					for(int k = 0; k < players_logs[i][j].length; k++){
+					for(int k = 0; k < players_logs.get(i).get(j).size(); k++){
 						// Write a new line in the block with as first column the time elapsed since the beginning
 						// of the game and as second column the ressource amount owned by the player at this time
-						logfile.println((timeBetweenTicks + timeBetweenTicks*k) + "		" + players_logs[i][j][k]);
+						logfile.println((timeBetweenTicks + timeBetweenTicks*k) + " " + players_logs.get(i).get(j).get(k));
 					}
 					// Gnuplot requires 2 blank lines separating each blocks
 					logfile.println("");
 					logfile.println("");
 				}
+				logfile.close();
 			}
 			catch (IOException e) { System.out.println(e); }
 		}
 		
 		// For each producer create a new log file
-		for(int i = 0; i < producers_logs.length; i++){
+		for(int i = 0; i < producers_logs.size(); i++){
 			try {
 				logfile = new PrintWriter("log_producer_"+i, "UTF-8");
 				// Write a new line with as first colum the time elapsed since the beginning of the game and
 				// as second column the ressource amount owned by the producer at this time
-				for(int j = 0; j < producers_logs[i].length; j++){
-					logfile.println((timeBetweenTicks + timeBetweenTicks*j) + "		" + producers_logs[i][j]);
+				for(int j = 0; j < producers_logs.get(i).size(); j++){
+					logfile.println((timeBetweenTicks + timeBetweenTicks*j) + "	" + producers_logs.get(i).get(j));
 				}
+				logfile.close();
 			}
 			catch (IOException e) { System.out.println(e); }
-		}		
+		}
+				
 	}
 }
