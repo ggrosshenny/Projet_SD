@@ -180,7 +180,7 @@
      for(i=0; i<stock.length; i++)
      {
        valRsc = Integer.toString(stock[i]);
-       this.gameLog.get(idPlayer).get(i).add(valRsc);
+       this.gameLog.get(idPlayer-1).get(i).add(valRsc);
      }
    }
 

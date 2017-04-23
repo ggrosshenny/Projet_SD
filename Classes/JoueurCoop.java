@@ -229,7 +229,7 @@ public class JoueurCoop implements Runnable
 
       try
       {
-        System.out.println("Valeur de finished : " + finished + " et rsc " + " : " + stock[0].getAmount() + "/" + stock[produ.getTypeOfRsc()].getAmountForVictory() + " (" + produ.getID() + " : " + produ.getTypeOfRsc() + ")");
+        System.out.println("Valeur de finished : " + finished + " et rsc " + " : " + stock[produ.getTypeOfRsc()].getAmount() + "/" + stock[produ.getTypeOfRsc()].getAmountForVictory() + " (" + produ.getID() + " : " + produ.getTypeOfRsc() + ")");
       }
       catch (RemoteException re) { System.out.println(re) ; }
     }
