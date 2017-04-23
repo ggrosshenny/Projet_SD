@@ -12,8 +12,6 @@ public class setLogPlayerTask extends TimerTask
 {
   private Ressource[] stock;
   private int[] stockStatus;
-  private int time;
-  private int timer;
   private String id;
   private ICoordinateur coordObject;
 
@@ -28,15 +26,13 @@ public class setLogPlayerTask extends TimerTask
     catch (MalformedURLException e) { System.out.println(e) ; }
 
     this.stock = stock0;
-    this.time = 0;
-    this.timer = timer0;
     this.id = id0;
+    this.stockStatus = new int[stock.length];
   }
 
   public void run()
   {
     int i = 0;
-    this.time += this.timer;
     for(i=0; i<stock.length; i++)
     {
       stockStatus[i] = stock[i].getAmount();

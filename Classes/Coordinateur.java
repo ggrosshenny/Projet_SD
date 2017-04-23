@@ -11,7 +11,7 @@ public class Coordinateur {
 
 		if (args.length < 7)
 		{
-			System.out.println("Usage : java Coordinateur <machine du Serveur> <port du rmiregistry> <nombre_joueurs> <nombre_producteurs> <liste_Joueurs> <liste_Producteurs> <addr_coordinateur>") ;
+			System.out.println("Usage : java Coordinateur <machine du Serveur> <port du rmiregistry> <nombre_joueurs> <nombre_producteurs> <liste_Joueurs> <liste_Producteurs> <addr_coordinateur> <nb_typeRsc>") ;
 			System.exit(0) ;
 		}
 
@@ -24,7 +24,7 @@ public class Coordinateur {
     try {
 
 			CoordinateurImpl Coord = new CoordinateurImpl(args);
-			Naming.rebind(args[args.length - 1], Coord);
+			Naming.rebind(args[args.length - 2], Coord);
 
 			int i, j;
 
