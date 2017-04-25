@@ -19,20 +19,23 @@ public class JoueurCoop implements Runnable
 {
 
   // Attributes
-  private String id;              // Id of the player who created the thread
-  private Ressource[] stock;      // Stock of the player
-  private String[][] prod;        // Addresses of producers ([<type of ressource produced>][<producer>])
-  private String[] players;       // Addresses of all players in the game
-  private int amountToTake;       // Amount to take each time the player wants to take ressource's units from a producer
-  private Random rand;            // Used to create random int
-  private ICoordinateur coord;    // Coordinateur object
-  private JoueurImpl playerServ;  // Server part of the player
-  private String coordAddr;       // Addr of coordinateur
-  private boolean running;        // Boolean to know if the thread should stop or not
-  private boolean isPunnished;    // Boolean to know if the player was caught during a steal or not
-  private boolean isWatcher;      // Boolean to know if the player is in observation mode
-  public Toolkit toolkit;         // Toolkit used by TimerTask
-  public Timer timer;             // Timer used to shedule the task
+  private String id;                      // Id of the player who created the thread
+  private Ressource[] stock;              // Stock of the player
+  private Ressource[] stockFromLastTick;  // Stock of the player at time - 1
+  private String[][] prod;                // Addresses of producers ([<type of ressource produced>][<producer>])
+  private String[] players;               // Addresses of all players in the game
+  private int amountToTake;               // Amount to take each time the player wants to take ressource's units from a producer
+  private Random rand;                    // Used to create random int
+  private ICoordinateur coord;            // Coordinateur object
+  private JoueurImpl playerServ;          // Server part of the player
+  private String coordAddr;               // Addr of coordinateur
+  private boolean running;                // Boolean to know if the thread should stop or not
+  private boolean isPunnished;            // Boolean to know if the player was caught during a steal or not
+  private boolean isStolen;               // Boolean to know if the player was stolen
+  private boolean wasUnderProtection;     // Boolean to know if we were protecting from stealing or not
+  private int isWatchingTime;             // int to know if the player is in observation mode
+  public Toolkit toolkit;                 // Toolkit used by TimerTask
+  public Timer timer;                     // Timer used to shedule the task
 
   // methods
 
@@ -47,7 +50,8 @@ public class JoueurCoop implements Runnable
     this.coordAddr = coord0;
     this.playerServ = playerServ0;
     this.isPunnished = false;
-    this.isWatcher = false;
+    this.isWatchingTime = 0;
+    this.wasUnderProtection = false;
 
     try
     {
@@ -149,7 +153,29 @@ public class JoueurCoop implements Runnable
    **/
   public void setStock(Ressource[] stock0)
   {
+    int i;
     this.stock = stock0;
+    this.stockFromLastTick = new Ressource[stock.length];
+    for(i=0; i<stock.length; i++)
+    {
+      this.stockFromLastTick[i] = this.stock[i].copy();
+    }
+  }
+
+
+  /**
+  * Method : saveActualStock
+  * Param : void
+  * Desc : Save the stock into stockFromLastTick
+  * Return : void
+  **/
+  public void saveActualStock()
+  {
+    int i;
+    for(i=0; i<stock.length; i++)
+    {
+      this.stockFromLastTick[i].setAmount(this.stock[i].getAmount());
+    }
   }
 
 
@@ -274,6 +300,7 @@ public class JoueurCoop implements Runnable
       // Verify if we are allowed to play
       if(isPunnished)
       {
+        System.out.println("Je me suis fait attrapé...");
         // Wait until we can play again
         try {
             Thread.sleep(20);
@@ -283,28 +310,65 @@ public class JoueurCoop implements Runnable
         isPunnished = false;
       }
 
-      try
+      if(isWatchingTime > 0) // If we are protecting from steal
       {
-        if(rollTheDice(15))
+        this.isWatchingTime--;
+        if(isWatchingTime == 0)
         {
-          takeRscFromPlayer();
-          System.out.println("J'ai volé à un joueur !");
+          playerServ.protectFromStealing(false);
         }
-        else
+      }
+      else // If the player wants to take ressources from producers or other players
+      {
+        try
         {
-          // Seeking for producer and/or taking ressources
-          if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()))
+          if(!wasUnderProtection)
           {
-            produ = takeRessourceFromNewProducer();
+            for(i=0; i<stock.length; i++)
+            {
+              if(stock[i].getAmount() < stockFromLastTick[i].getAmount())
+              {
+                this.isStolen = true;
+              }
+            }
+          }
+          if(isStolen)
+          {
+            playerServ.protectFromStealing(true);
+            this.isWatchingTime = 3;
+            this.isStolen = false;
+            this.wasUnderProtection = true;
+            System.out.println("Je me protège des vols !");
           }
           else
           {
-            takeRessource(produ);
+            if(rollTheDice(5))
+            {
+              takeRscFromPlayer();
+              System.out.println("J'ai volé un joueur !");
+            }
+            else
+            {
+              // Seeking for producer and/or taking ressources
+              if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()))
+              {
+                produ = takeRessourceFromNewProducer();
+              }
+              else
+              {
+                takeRessource(produ);
+              }
+              // Save the stock to verify if we are stolen
+              saveActualStock();
+              // Reset of protection ability
+              this.wasUnderProtection = false;
+              // Control message
+              System.out.println("Valeur de rsc " + " : " + stock[produ.getTypeOfRsc()].getAmount() + "/" + stock[produ.getTypeOfRsc()].getAmountForVictory() + " (" + produ.getID() + " : " + produ.getTypeOfRsc() + ")");
+            }
           }
-          System.out.println("Valeur de rsc " + " : " + stock[produ.getTypeOfRsc()].getAmount() + "/" + stock[produ.getTypeOfRsc()].getAmountForVictory() + " (" + produ.getID() + " : " + produ.getTypeOfRsc() + ")");
         }
+        catch (RemoteException re) { System.out.println(re) ; }
       }
-      catch (RemoteException re) { System.out.println(re) ; }
 
       // Verifying if all objectives are completed
       finished = true;
@@ -315,6 +379,7 @@ public class JoueurCoop implements Runnable
           finished = finished && stock[i].amountForVictoryIsReached();
         }
       }
+
     }
 
     // Stop log system

@@ -218,4 +218,16 @@ public class JoueurImpl extends Agent implements IJoueur
    }
 
 
+   /**
+   * Method : protectFromStealing
+   * Param : Boolean - protectStatus, new value for the isWatcher boolean
+   * Desc : Set the boolean isWatcher at the given value
+   * Return : void
+   **/
+   public void protectFromStealing(Boolean protectStatus)
+   {
+     this.isWatcher = protectStatus;
+   }
+
+
 }
