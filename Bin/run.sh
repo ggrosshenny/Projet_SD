@@ -19,6 +19,15 @@ fi
 
 rmiregistry &
 
+# Creation du répertoire de log et suppression des fichiers logs exitants
+if [ -e ../logs ]
+then
+	rm -rf ../logs/*.bat
+	rm -rf ../logs/*.png
+else
+	mkdir ../logs
+fi
+
 # Addresse du coordinateur
 Coordinateur="rmi://localhost:$1/coordinateur"
 

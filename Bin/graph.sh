@@ -1,20 +1,24 @@
 #!/bin/sh
 
+
+# Vérification du nombre d'arguments
 if [ $# -ne 2 ]
 then
-	echo 'usage : $0 <idJoueur> <nbTypeOfRsc>'
+	echo 'usage : '$0' <idJoueur> <nbTypeOfRsc-1>'
 	exit 1
 fi
 
-filename='log_player_'
+# On récupère le nom du fichier de logs à modéliser
+filename='../logs/log_player_'
 logfilename=${filename}$1".bat"
 nbRsc=$2
 
+# Si le fichier de logs existe, alors pour chaque bloc de données de ce fichier on trace une courbe dans un fichier .png grâce à gnuplot
 if [ -f $logfilename ]
 then
 	outputfile=${filename}$1".png"
-	echo "set term png; set output '"${outputfile}"'; plot for [IDX=0:"$nbRsc"] '"${logfilename}"' index IDX u 1:2 with lines lt IDX+1" | gnuplot
-	see ${outputfile}
+	echo "set term png; set output '"${outputfile}"'; plot for [IDX=0:"$nbRsc"] '"${logfilename}"' index IDX u 1:2 with lines lt IDX" | gnuplot
+	see ${outputfile} &
 else
 	echo 'File not found'
 	exit 1
