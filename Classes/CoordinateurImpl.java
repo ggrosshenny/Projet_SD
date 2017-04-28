@@ -261,7 +261,12 @@
      }
    }
 
-
+	/**
+	 * Method : endGame
+	 * Param : String, idJoueur - the id of the player who just won the game & called the method
+	 * Desc : Messaging every players & producers that the game is over, then starts the generation of the log files.
+	 * Return : boolean
+	 **/
    public synchronized boolean endGame(String idJoueur){
 
 		IJoueur tempJoueur;
