@@ -9,7 +9,8 @@
 *Test.java
 
 # Log file
-*.log
+*.bat
+/logs/*
 
 # BlueJ files
 *.ctxt
