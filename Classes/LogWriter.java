@@ -26,6 +26,7 @@ public class LogWriter {
 			producers_logs = prodLogs;
 			
 			timeBetweenTicks = timer;
+			System.out.println(prodLogs.size());
 		
 	}
 	
@@ -86,10 +87,11 @@ public class LogWriter {
 				catch (UnsupportedOperationException e) { System.out.println(e); }
 			}
 			
+			
 			// For each producer create a new log file
 			for(int i = 0; i < producers_logs.size(); i++){
 				try {
-					logfile = new PrintWriter("log_producer_"+i, "UTF-8");
+					logfile = new PrintWriter("log_producer_"+(i+1)+".bat", "UTF-8");
 					// Write a new line with as first colum the time elapsed since the beginning of the game and
 					// as second column the ressource amount owned by the producer at this time
 					for(int j = 0; j < producers_logs.get(i).size(); j++){
@@ -99,8 +101,7 @@ public class LogWriter {
 					Files.move(Paths.get("../Bin/log_producer_"+(i+1)+".bat"), Paths.get("../logs/"+gameLogDir+"/log_producer_"+(i+1)+".bat"));
 				}
 				catch (IOException e) { System.out.println(e); }
-			}
-					
+			}					
 		}
 	}
 }

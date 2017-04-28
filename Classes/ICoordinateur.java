@@ -26,6 +26,9 @@ public interface ICoordinateur extends Remote
 
   public void setLog(String id, int[] Stock)
     throws RemoteException;
+    
+  public void setLogProd(String id, int Stock)
+    throws RemoteException;
 
   public int[][] observeSystem()
     throws RemoteException;

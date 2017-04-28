@@ -25,6 +25,7 @@
    private int nb_TypeRsc;
    private int CurrentPlayerPLaying;
    private ArrayList<ArrayList<ArrayList<String>>> gameLog;
+   private ArrayList<ArrayList<String>> gameLogProducers;
    private int[][] systemObservation;
    private boolean isTbT;
 
@@ -57,7 +58,7 @@
 			this.Producers = new String[nb_TypeRsc][nb_producers];
 
 
-      // Creation of log ArrayList
+      // Creation of players log ArrayList
       this.gameLog = new ArrayList<ArrayList<ArrayList<String>>>(); // ArrayList 3D for the game logs
       ArrayList<ArrayList<String>> playerLog;                       // Logs of each player
       ArrayList<String> logPerRsc;                                  // Logs of each ressource for each player
@@ -71,6 +72,15 @@
         }
         this.gameLog.add(playerLog);
       }
+      
+      // Creation of producers log ArrayList (idem)
+      this.gameLogProducers = new ArrayList<ArrayList<String>>();
+      ArrayList<String> logPerRscProducer;
+	  for(i = 0; i < this.nb_producers; i++)
+	  {
+		logPerRscProducer = new ArrayList<String>();
+		this.gameLogProducers.add(logPerRscProducer);
+	  }
 
       j=0;
       for(i = 0; i < this.nb_players; i++){
@@ -262,6 +272,21 @@
        this.gameLog.get(idPlayer-1).get(i).add(valRsc);
      }
    }
+   
+   /**
+   * Method : setLog
+   * Param : String, id - the id of the producer calling the Method
+   * Param : int, stock - the stock status of the producer
+   * Desc : Stock the log on the arrayList 2D
+   * Return : void
+   **/
+   public synchronized void setLogProd(String id, int stock)
+   {
+     String valRsc;
+     int idProducer = Integer.parseInt(id.substring(id.length()-1, id.length()));
+     valRsc = Integer.toString(stock);
+     this.gameLogProducers.get(idProducer-1).add(valRsc);
+   }
 
 
   /**
@@ -340,11 +365,11 @@
       LogWriter logEntity;
       if(this.isTbT)
       {
-        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 1);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 1);
       }
       else
       {
-        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 10);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 10);
       }
 			logEntity.writeLogFiles();
 			return true;

@@ -42,7 +42,6 @@ public class ProductionTask extends TimerTask
       catch (NotBoundException re) { System.out.println(re) ; }
       catch (RemoteException re) { System.out.println(re) ; }
       catch (MalformedURLException e) { System.out.println(e) ; }
-
     }
   }
 }

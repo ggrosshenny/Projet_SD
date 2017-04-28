@@ -40,6 +40,11 @@
      timer.schedule(new ProductionTask(production, coord),
 	                  0,        //initial delay
 	                  timeBeforeProduction0);  //subsequent rate
+	 	  
+	// Starting log system that will give the stock status each 1000 ms
+    timer.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
+                   0,        //initial delay
+                   10);      //subsequent rate
    }
 
 

@@ -66,7 +66,7 @@ public class JoueurCoop extends JoueurCommon implements Runnable
     catch (RemoteException re) { System.out.println(re) ; }
 
     // Starting log system that will give the stock status each 1000 ms
-    timer.schedule(new setLogPlayerTask(stock, coordAddr, 1000, this.id),
+    timer.schedule(new setLogPlayerTask(stock, coordAddr, this.id),
                    0,        //initial delay
                    10);  //subsequent rate
 
