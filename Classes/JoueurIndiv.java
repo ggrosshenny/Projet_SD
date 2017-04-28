@@ -42,6 +42,8 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
   {
     int i = 0;
     int rscToTake = 0;
+    int lastRscTaken = 0;
+    int temp = 0;
     boolean finished = false;
     Producteur produ = null;
 
@@ -99,12 +101,24 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
 
         try
         {
+          // Observe all the system to know the kind of ressource to take
+          if(rollTheDice(2))
+          {
+            observeAllPlayers();
+            temp = getRscTypeWithMaxAmount();
+            if(!stock[temp].amountForVictoryIsReached())
+            {
+              rscToTake = temp;
+            }
+          }
+
+          //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
             takeRscFromPlayer(rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
-          else
+          else // Or try to take ressource from a producer
           {
             // Seeking for producer and/or taking ressources
             if((produ == null) || (produ.getAmountRsc() <= 0))
@@ -125,6 +139,9 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
         }
         catch (RemoteException re) { System.out.println(re) ; }
       }
+
+      // Save the type of rsc taken
+      lastRscTaken = rscToTake;
 
       // Verifying if all objectives are completed
       finished = true;
@@ -166,5 +183,6 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
         System.out.println("  ressource " + i + " : " + stock[i].getAmount());
       }
     }
+
   }
 }

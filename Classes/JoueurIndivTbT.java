@@ -7,7 +7,6 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
 {
   // Attributes
   int nbTurnToWait;
-  int nb_turn;
   int[] stockStatus;
 
   // Methods
@@ -32,7 +31,10 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
   public void run()
   {
     int i = 0;
+    int j = 0;
     int rscToTake = 0;
+    int lastRscTaken = 0;
+    int temp = 0;
     boolean finished = false;
     Producteur produ = null;
     this.stockStatus = new int[stock.length];
@@ -93,12 +95,34 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
 
         try
         {
+          // Observe all the system to know the kind of ressource to take
+          if(rollTheDice(3))
+          {
+            observeAllPlayers();
+            temp = getRscTypeWithMaxAmount();
+            if(!stock[temp].amountForVictoryIsReached())
+            {
+              rscToTake = temp;
+            }
+            // print for demonstration of the method
+            System.out.println("J'ai regardé tout le systeme : ");
+            for(i=0; i<this.players.length; i++)
+            {
+              for(j=0; j<this.stock.length; j++)
+              {
+                System.out.println("le joueur " + (i+1) + " a " + observationResult[i][j] + "/" + j);
+              }
+            }
+            System.out.println("La ressource ayant le plus d'unités est : " + rscToTake);
+          }
+
+          //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
             takeRscFromPlayer(rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
-          else
+          else // Or try to take ressource from a producer
           {
             // Seeking for producer and/or taking ressources
             if((produ == null) || (produ.getAmountRsc() <= 0))
@@ -140,7 +164,7 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
         catch (RemoteException re) { System.out.println(re) ; }
       }
 
-      nb_turn++;
+      lastRscTaken = rscToTake;
 
       // Write the logs with coordinator
       for(i=0; i<stock.length; i++)
@@ -181,5 +205,6 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
     }
 
   }
+
 
 }
