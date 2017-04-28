@@ -33,6 +33,7 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
     int j = 0;
     int rscToTake = 0;
     int lastRscTaken = 0;
+    int temp = 0;
     boolean finished = false;
     Producteur produ = null;
     this.stockStatus = new int[stock.length];
@@ -94,10 +95,14 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
         try
         {
           // Observe all the system to know the kind of ressource to take
-          if(rollTheDice(5))
+          if(rollTheDice(3))
           {
             observeAllPlayers();
-            rscToTake = getRscTypeWithMaxAmount();
+            temp = getRscTypeWithMaxAmount();
+            if(!stock[temp].amountForVictoryIsReached())
+            {
+              rscToTake = temp;
+            }
             // print for demonstration of the method
             System.out.println("J'ai regardé tout le systeme : ");
             for(i=0; i<this.players.length; i++)

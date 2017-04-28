@@ -44,6 +44,7 @@ public class JoueurCoop extends JoueurCommon implements Runnable
     int i = 0;
     int rscToTake = 0;
     int lastRscTaken = 0;
+    int temp = 0;
     boolean finished = false;
     Producteur produ = null;
 
@@ -102,10 +103,14 @@ public class JoueurCoop extends JoueurCommon implements Runnable
         try
         {
           // Observe all the system to know the kind of ressource to take
-          if(rollTheDice(5))
+          if(rollTheDice(2))
           {
             observeAllPlayers();
-            rscToTake = getRscTypeWithMaxAmount();
+            temp = getRscTypeWithMaxAmount();
+            if(!stock[temp].amountForVictoryIsReached())
+            {
+              rscToTake = temp;
+            }
           }
 
           //Try to steal a player
