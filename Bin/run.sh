@@ -24,9 +24,11 @@ fi
 
 # Si au moins un joueur humain est annoncé, la partie passe automatique en tour-par-tour
 TbT=$8
+TimeBeforeProduction=$7
 if [ ${11} -gt 0 ]
 then
-	TbT=1
+	TbT=0
+	TimeBeforeProduction=10000
 fi
 
 
@@ -78,30 +80,36 @@ for i in $ProdIDList
 do
   rscType=$((($rscType+1)%$4))
   rscTypeCtrlList="$rscTypeCtrlList $rscType"
-  xterm -e java ProducteurServeur $1 $i $Coordinateur $rscType $5 $6 $7 &
+  xterm -e java ProducteurServeur $1 $i $Coordinateur $rscType $5 $6 $TimeBeforeProduction &
 done
 
 echo $rscTypeCtrlList
 
 # Création des joueurs
+playerIndiv='indiv:'
+playerCoop='coop:'
 idxTypeJoueur=0
 for i in $PlayerIDList
 do
-  if [ $idxTypeJoueur -lt $8 ]
+  if [ $idxTypeJoueur -lt $9 ]
   then
-	xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 $TbT $4 0 &
+	  xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 $TbT 1 $4 &
     idxTypeJoueur=`expr $idxTypeJoueur + 1`
+    playerCoop="$playerCoop Player_$idxTypeJoueur"
   else
     if [ $idxTypeJoueur -lt `expr $9 + $10` ]
     then
-      xterm -e java Joueur localhost $1 $i 0 $Coordinateur 1 $TbT $4 0 &
+      xterm -e java Joueur localhost $1 $i 0 $Coordinateur 1 $TbT 1 $4 &
       idxTypeJoueur=`expr $idxTypeJoueur + 1`
+      playerIndiv="$playerIndiv Player_$idxTypeJoueur"
     else
-      xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 $TbT $4 1 &
+      xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 $TbT 0 $4 &
     fi    
   fi
 done
 
+echo $playerCoop
+echo $playerIndiv
 
 # Création du coordinateur de la partie
 sleep 2
