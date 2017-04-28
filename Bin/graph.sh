@@ -17,7 +17,7 @@ nbRsc=$2
 if [ -f $logfilename ]
 then
 	outputfile=${filename}$1".png"
-	echo "set term png; set output '"${outputfile}"'; plot for [IDX=0:"$nbRsc"] '"${logfilename}"' index IDX u 1:2 with lines lt IDX" | gnuplot
+	echo "set term png; set output '"${outputfile}"'; set title 'player "$1" logs'; set key outside; plot for [IDX=0:"$nbRsc"-1] '"${logfilename}"' index IDX u 1:2 title columnheader(1) with lines lt IDX" | gnuplot
 	see ${outputfile} &
 else
 	echo 'File not found'

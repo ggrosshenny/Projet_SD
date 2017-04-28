@@ -44,7 +44,7 @@ public class LogWriter {
 				logfile = new PrintWriter("log_player_"+(i+1)+".bat", "UTF-8");
 				// For each ressource create a block
 				for(int j = 0; j < players_logs.get(i).size(); j++){
-					logfile.println("# block rsc " + j + " :");
+					logfile.println('"' + "Ressource " + j + '"');
 					
 					for(int k = 0; k < players_logs.get(i).get(j).size(); k++){
 						// Write a new line in the block with as first column the time elapsed since the beginning
