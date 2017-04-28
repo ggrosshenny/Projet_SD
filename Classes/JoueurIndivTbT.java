@@ -1,34 +1,25 @@
-/**
-* Class : JoueurIndiv
-* Extend :
-* Desc : Class to modelize the actions of player (taking ressource from
-*        produceur, watch everything, etc... ). Used in a thread from the
-*        server part of player (i.e. this is one variant of the client part of player).
-**/
+// Class joueurIndivTbT
 
 import java.rmi.* ;
 import java.net.MalformedURLException ;
-import java.util.TimerTask;
-import java.util.Timer;
-import java.awt.Toolkit;
 
-public class JoueurIndiv extends JoueurCommon implements Runnable
+public class JoueurIndivTbT extends JoueurCommon implements Runnable
 {
-
   // Attributes
-  public Toolkit toolkit;                 // Toolkit used by TimerTask
-  public Timer timer;                     // Timer used to shedule the task
+  int nbTurnToWait;
+  int nb_turn;
+  int[] stockStatus;
 
-  // methods
-  
-  public JoueurIndiv(JoueurImpl playerServ0, String id0, String coord0, int amountToTake0)
+  // Methods
+
+
+  public JoueurIndivTbT(JoueurImpl playerServ0, String id0, String coord0, int amountToTake0)
   {
     super(playerServ0, id0, coord0, amountToTake0);
-
-    // Initialize the timer and timerTask for log system
-    this.toolkit = Toolkit.getDefaultToolkit();
-    this.timer = new Timer();
+    this.nbTurnToWait = 3;
+    this.nb_turn = 0;
   }
+
 
   /**
    * Method : run
@@ -44,46 +35,47 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
     int rscToTake = 0;
     boolean finished = false;
     Producteur produ = null;
+    this.stockStatus = new int[stock.length];
 
     // Waiting on starting blocks !
-    // Sorry for active waiting...
     try
     {
       coord.PlayerReady(); // Say to the coordinator that we are ready
     }
     catch (RemoteException re) { System.out.println(re) ; }
 
-    // Wait for other players
-    try
-    {
-      while(!coord.playerStart())
-      {
-      }
-    }
-    catch (RemoteException re) { System.out.println(re) ; }
-
-    // Starting log system that will give the stock status each 1000 ms
-    timer.schedule(new setLogPlayerTask(stock, coordAddr, 1000, this.id),
-                   0,        //initial delay
-                   10);  //subsequent rate
-
+    // Control message
     System.out.println("Je commence mon travail !");
 
     while(!finished && running)
     {
+
+      synchronized(playerServ)
+      {
+        try
+        {
+          playerServ.wait();
+        }
+        catch (InterruptedException ie) {System.out.println(ie) ;}
+      }
+
+
       // Verify if we are allowed to play
       if(isPunnished)
       {
         System.out.println("Je me suis fait attrapé...");
         // Wait until we can play again
-        try {
-            Thread.sleep(20);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
+        if(nbTurnToWait > 0)
+        {
+          nbTurnToWait--;
         }
-        isPunnished = false;
+        else
+        {
+          isPunnished = false;
+        }
       }
 
+      // Verify if we are not observing to protect ourself from stealing
       if(isWatchingTime > 0) // If we are protecting from steal
       {
         this.isWatchingTime--;
@@ -92,9 +84,11 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
           playerServ.protectFromStealing(false);
         }
       }
-      else // If the player wants to take ressources from producers or other players
+
+      // If we are not punnished or observing, we can play
+      if(!isPunnished && isWatchingTime == 0)
       {
-        // Seek for the ressource type we want to take
+        // Seek the ressource type we want to take
         rscToTake = chooseRscType();
 
         try
@@ -121,7 +115,8 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
             if(produ != null)
             {
               System.out.println("Valeur de rsc " + " : " + stock[produ.getTypeOfRsc()].getAmount() + "/" + stock[produ.getTypeOfRsc()].getAmountForVictory() + " (" + produ.getID() + " : " + produ.getTypeOfRsc() + ")");
-            }          }
+            }
+          }
         }
         catch (RemoteException re) { System.out.println(re) ; }
       }
@@ -136,11 +131,29 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
         }
       }
 
-    }
+      if(!finished)
+      {
+        try
+        {
+          this.coord.endOfTurn(this.id);
+        }
+        catch (RemoteException re) { System.out.println(re) ; }
+      }
 
-    // Stop log system
-    timer.cancel();
-    timer.purge();
+      nb_turn++;
+
+      // Write the logs with coordinator
+      for(i=0; i<stock.length; i++)
+      {
+        stockStatus[i] = stock[i].getAmount();
+      }
+      try
+      {
+        this.coord.setLog(this.id, this.stockStatus);
+      }
+      catch (RemoteException re) { System.out.println(re) ; }
+
+    }
 
     // If we had completed all objectives
     if(finished)
@@ -166,5 +179,7 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
         System.out.println("  ressource " + i + " : " + stock[i].getAmount());
       }
     }
+
   }
+
 }
