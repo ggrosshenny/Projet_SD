@@ -98,6 +98,15 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
             takeRscFromPlayer(rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
+          else if(rollTheDice(5))
+          {
+            observeAllPlayers();
+            System.out.println("J'ai regardé tout le systeme : ");
+            for(i=0; i<this.players.length; i++)
+            {
+              System.out.println("le joueur " + (i+1) + " a " + observationResult[i][0] + " unités de la ressource 0.");
+            }
+          }
           else
           {
             // Seeking for producer and/or taking ressources

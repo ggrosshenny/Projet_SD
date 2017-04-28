@@ -82,8 +82,8 @@ public class JoueurImpl extends Agent implements IJoueur
       {
         player = new JoueurCoop(this, id, coordinateur, 3);
         playerRunnable = (JoueurCoop)player;
-        player.setStock(this.stock);
         player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+        player.setStock(this.stock);
       }
       if(!isCoop) // Non-cooperative player without turn waiting
       {
@@ -96,8 +96,8 @@ public class JoueurImpl extends Agent implements IJoueur
       {
         player = new JoueurCoopTbT(this, id, coordinateur, 3);
         playerRunnable = (JoueurCoopTbT)player;
-        player.setStock(this.stock);
         player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+        player.setStock(this.stock);
       }
       if(!isCoop) // Non-cooperative player with turn waiting
       {

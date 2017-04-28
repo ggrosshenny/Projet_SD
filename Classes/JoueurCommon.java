@@ -12,6 +12,7 @@ public class JoueurCommon
   protected Ressource[] stock;              // Stock of the player
   protected String[][] prod;                // Addresses of producers ([<type of ressource produced>][<producer>])
   protected String[] players;               // Addresses of all players in the game
+  protected int[][] observationResult;          // tab to stock the observation of the system
   protected int amountToTake;               // Amount to take each time the player wants to take ressource's units from a producer
   protected int stealPercentage;            // percentage of chance to steal
   protected Random rand;                    // Used to create random int
@@ -146,6 +147,7 @@ public class JoueurCommon
   public void setStock(Ressource[] stock0)
   {
     this.stock = stock0;
+    this.observationResult = new int[this.players.length][this.stock.length];
   }
 
 
@@ -314,6 +316,23 @@ public class JoueurCommon
      catch (RemoteException re) { System.out.println(re) ; }
      catch (MalformedURLException e) { System.out.println(e) ; }
      return amountOfRscOfProd;
+   }
+
+
+   /**
+   * Method : observeAllPlayers
+   * Param : void
+   * Desc : call the method observeSystem of the coordinator and get the return
+   *        into systemObservation tab.
+   * Return : void
+   **/
+   public void observeAllPlayers()
+   {
+     try
+     {
+      observationResult = this.coord.observeSystem();
+     }
+     catch (RemoteException re) { System.out.println(re) ; }
    }
 
 
