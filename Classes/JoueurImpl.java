@@ -20,14 +20,15 @@ public class JoueurImpl extends Agent implements IJoueur
   private String[] players;       // Addresses of all players
   private boolean isTurnByTurn;   // Boolean to know if we are in tur by turn mod
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
-  private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
+  private boolean isWatcher;       // Boolean to know if the player is watching fo other player's actions or not
+  private boolean isHuman;        // Boolean to know if the player is human
   private Joueur[] watchers;      // List of players watching for ohter player's actions
   private JoueurCommon player;    // Player object of the thread
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
   private int nb_TypeRsc;         // Number of different types of ressource
 
   // Methods
-  public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT, int nb_TypeRsc0)
+  public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT, boolean isHuman0, int nb_TypeRsc0)
     throws RemoteException
   {
     super(id0, type0, coord);
@@ -36,8 +37,17 @@ public class JoueurImpl extends Agent implements IJoueur
 
     this.isWatcher = false;
 
-    this.isCoop = isCoop0;
-    this.isTurnByTurn = isTbT;
+    if(isHuman0)
+    {
+      this.isHuman = isHuman0;
+      this.isCoop = false;
+      this.isTurnByTurn = true;
+    }
+    else
+    {
+      this.isCoop = isCoop0;
+      this.isTurnByTurn = isTbT;
+    }
     this.nb_TypeRsc = nb_TypeRsc0;
   }
 
@@ -76,32 +86,48 @@ public class JoueurImpl extends Agent implements IJoueur
     // Create the player client object
     // Create the client part of the player (p2p)
     // Create the player object with the right behaiour
-    if(!isTurnByTurn)
+    if(isHuman)
     {
-      if(isCoop) // Cooperative player without turn waiting
-      {
-        player = new JoueurCoop(this, id, coordinateur, 3);
-        playerRunnable = (JoueurCoop)player;
-        player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
-        player.setStock(this.stock);
-      }
-      if(!isCoop) // Non-cooperative player without turn waiting
-      {
-        //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
-      }
+      player = new JoueurHuman(this, id, coordinateur, 3);
+      playerRunnable = (JoueurHuman)player;
+      player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+      player.setStock(this.stock);
     }
     else
     {
-      if(isCoop) // Cooperative player with turn waiting
+      if(!isTurnByTurn)
       {
-        player = new JoueurCoopTbT(this, id, coordinateur, 3);
-        playerRunnable = (JoueurCoopTbT)player;
-        player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
-        player.setStock(this.stock);
+        if(isCoop) // Cooperative player without turn waiting
+        {
+          player = new JoueurCoop(this, id, coordinateur, 3);
+          playerRunnable = (JoueurCoop)player;
+          player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+          player.setStock(this.stock);
+        }
+        if(!isCoop) // Non-cooperative player without turn waiting
+        {
+          player = new JoueurIndiv(this, id, coordinateur, 3);
+          playerRunnable = (JoueurIndiv)player;
+          player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+          player.setStock(this.stock);
+        }
       }
-      if(!isCoop) // Non-cooperative player with turn waiting
+      else
       {
-        // TO DO
+        if(isCoop) // Cooperative player with turn waiting
+        {
+          player = new JoueurCoopTbT(this, id, coordinateur, 3);
+          playerRunnable = (JoueurCoopTbT)player;
+          player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+          player.setStock(this.stock);
+        }
+        if(!isCoop) // Non-cooperative player with turn waiting
+        {
+          player = new JoueurIndivTbT(this, id, coordinateur, 3);
+          playerRunnable = (JoueurIndivTbT)player;
+          player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+          player.setStock(this.stock);
+        }
       }
     }
 
@@ -159,15 +185,19 @@ public class JoueurImpl extends Agent implements IJoueur
    **/
    public synchronized int steal(String id, int rscType, int amount)
    {
-     if(!isWatcher)
+     if((!isWatcher) && (!isHuman))
      {
        if(playerClient.isAlive())
        {
          player.isProtectingFromStealing(3);
-         isWatcher = true;
          return stock[rscType].rmvRessource(amount);
        }
        return 0;
+     }
+     else if((!isWatcher) && (isHuman))
+     {
+       player.sendMessage("Vous vous êtes fait volé !");
+       return stock[rscType].rmvRessource(amount);
      }
      else
      {

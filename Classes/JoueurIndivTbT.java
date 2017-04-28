@@ -16,7 +16,6 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
   {
     super(playerServ0, id0, coord0, amountToTake0);
     this.nbTurnToWait = 3;
-    this.nb_turn = 0;
   }
 
 
@@ -119,7 +118,7 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
           //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
-            takeRscFromPlayer(rscToTake);
+            takeRscFromPlayer(null, rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
           else // Or try to take ressource from a producer

@@ -207,7 +207,7 @@ public class JoueurCommon
   * Desc : Steal ressource from a player
   * Return : void
   **/
-  public void takeRscFromPlayer(int rscType)
+  public void takeRscFromPlayer(String playerId, int rscType)
   {
     int i=0;
     IJoueur tempPlayer;
@@ -217,7 +217,15 @@ public class JoueurCommon
       return;
     }
 
-    i = this.rand.nextInt(this.players.length);
+    if((playerId == null) || (playerId.length() == 0))
+    {
+      i = this.rand.nextInt(this.players.length);
+    }
+    else
+    {
+      i = Integer.parseInt(playerId.substring(playerId.length()-1, playerId.length()));
+    }
+
     try
     {
       tempPlayer = (IJoueur) Naming.lookup(this.players[i]);
@@ -269,6 +277,7 @@ public class JoueurCommon
      {
        this.isWatchingTime = nbIteration;
        this.wasUnderProtection = true;
+       playerServ.protectFromStealing(true);
        System.out.println("Je me protège des vols !");
      }
    }
@@ -311,6 +320,7 @@ public class JoueurCommon
        } while (produ0 == null);
 
        amountOfRscOfProd = produ0.getAmountRsc();
+       System.out.println("Le producteur : " + produ0.getID() + " a un total de " + amountOfRscOfProd + " de ressource de type : " + produ0.getTypeOfRsc());
      }
      catch (NotBoundException re) { System.out.println(re) ; }
      catch (RemoteException re) { System.out.println(re) ; }
@@ -360,6 +370,18 @@ public class JoueurCommon
        }
      }
      return maxRsc;
+   }
+
+
+   /**
+   * Method : sendMessage
+   * Param : String, msg - message to print on the thread
+   * Desc : Print the message msg on the thread output
+   * Return : void
+   **/
+   public void sendMessage(String msg)
+   {
+     System.out.println(msg);
    }
 
 }

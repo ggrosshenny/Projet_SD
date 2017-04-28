@@ -20,7 +20,7 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
   public Timer timer;                     // Timer used to shedule the task
 
   // methods
-  
+
   public JoueurIndiv(JoueurImpl playerServ0, String id0, String coord0, int amountToTake0)
   {
     super(playerServ0, id0, coord0, amountToTake0);
@@ -115,7 +115,7 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
           //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
-            takeRscFromPlayer(rscToTake);
+            takeRscFromPlayer(null, rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
           else // Or try to take ressource from a producer

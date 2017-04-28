@@ -103,7 +103,7 @@ public class JoueurCoop extends JoueurCommon implements Runnable
         try
         {
           // Observe all the system to know the kind of ressource to take
-          if(rollTheDice(2))
+          if(rollTheDice(3))
           {
             observeAllPlayers();
             temp = getRscTypeWithMaxAmount();
@@ -116,7 +116,7 @@ public class JoueurCoop extends JoueurCommon implements Runnable
           //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
-            takeRscFromPlayer(rscToTake);
+            takeRscFromPlayer(null, rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
           else // Or try to take ressource from a producer
