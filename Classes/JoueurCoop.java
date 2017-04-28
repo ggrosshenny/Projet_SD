@@ -43,6 +43,7 @@ public class JoueurCoop extends JoueurCommon implements Runnable
   {
     int i = 0;
     int rscToTake = 0;
+    int lastRscTaken = 0;
     boolean finished = false;
     Producteur produ = null;
 
@@ -100,15 +101,23 @@ public class JoueurCoop extends JoueurCommon implements Runnable
 
         try
         {
+          // Observe all the system to know the kind of ressource to take
+          if(rollTheDice(5))
+          {
+            observeAllPlayers();
+            rscToTake = getRscTypeWithMaxAmount();
+          }
+
+          //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
             takeRscFromPlayer(rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
-          else
+          else // Or try to take ressource from a producer
           {
             // Seeking for producer and/or taking ressources
-            if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()))
+            if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()) || (rscToTake != lastRscTaken))
             {
               produ = takeRessourceFromNewProducer(rscToTake);
             }
@@ -126,6 +135,9 @@ public class JoueurCoop extends JoueurCommon implements Runnable
         }
         catch (RemoteException re) { System.out.println(re) ; }
       }
+
+      // Save the type of rsc taken
+      lastRscTaken = rscToTake;
 
       // Verifying if all objectives are completed
       finished = true;

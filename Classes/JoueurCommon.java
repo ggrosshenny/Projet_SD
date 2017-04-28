@@ -336,4 +336,30 @@ public class JoueurCommon
    }
 
 
+   /**
+   * Method : getRscTypeWithMaxAmount
+   * Param : int[][] tab2D
+   * Desc : return the ressource type with the maximum amount in the tab.
+   * Return : int ressource type
+   **/
+   public int getRscTypeWithMaxAmount()
+   {
+     int i = 0;
+     int j = 0;
+     int maxRsc = 0;
+     int max = 0;
+     for(i=0; i<this.players.length; i++)
+     {
+       for(j=0; j<this.stock.length; j++)
+       {
+         if(max < observationResult[i][j])
+         {
+           max = observationResult[i][j];
+           maxRsc = j;
+         }
+       }
+     }
+     return maxRsc;
+   }
+
 }

@@ -284,11 +284,11 @@
         // Get the last value of logs of each players for each ressource type
         if((index = this.gameLog.get(i).get(j).size()-1) < 0)
         {
-          systemObservation[i][0] = 0;
+          systemObservation[i][j] = 0;
         }
         else
         {
-          systemObservation[i][0] = Integer.parseInt(this.gameLog.get(i).get(j).get(index));
+          systemObservation[i][j] = Integer.parseInt(this.gameLog.get(i).get(j).get(index));
         }
       }
     }

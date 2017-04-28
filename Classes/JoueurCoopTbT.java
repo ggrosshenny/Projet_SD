@@ -7,7 +7,6 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
 {
   // Attributes
   int nbTurnToWait;
-  int nb_turn;
   int[] stockStatus;
 
   // Methods
@@ -17,7 +16,6 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
   {
     super(playerServ0, id0, coord0, amountToTake0);
     this.nbTurnToWait = 3;
-    this.nb_turn = 0;
   }
 
 
@@ -32,7 +30,9 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
   public void run()
   {
     int i = 0;
+    int j = 0;
     int rscToTake = 0;
+    int lastRscTaken = 0;
     boolean finished = false;
     Producteur produ = null;
     this.stockStatus = new int[stock.length];
@@ -93,24 +93,33 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
 
         try
         {
+          // Observe all the system to know the kind of ressource to take
+          if(rollTheDice(5))
+          {
+            observeAllPlayers();
+            rscToTake = getRscTypeWithMaxAmount();
+            // print for demonstration of the method
+            System.out.println("J'ai regardé tout le systeme : ");
+            for(i=0; i<this.players.length; i++)
+            {
+              for(j=0; j<this.stock.length; j++)
+              {
+                System.out.println("le joueur " + (i+1) + " a " + observationResult[i][j] + "/" + j);
+              }
+            }
+            System.out.println("La ressource ayant le plus d'unités est : " + rscToTake);
+          }
+
+          //Try to steal a player
           if(rollTheDice(this.stealPercentage))
           {
             takeRscFromPlayer(rscToTake);
             System.out.println("J'ai volé un joueur !");
           }
-          else if(rollTheDice(5))
-          {
-            observeAllPlayers();
-            System.out.println("J'ai regardé tout le systeme : ");
-            for(i=0; i<this.players.length; i++)
-            {
-              System.out.println("le joueur " + (i+1) + " a " + observationResult[i][0] + " unités de la ressource 0.");
-            }
-          }
-          else
+          else // Or try to take ressource from a producer
           {
             // Seeking for producer and/or taking ressources
-            if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()))
+            if((produ == null) || (produ.getAmountRsc() < amountToTake) || (stock[produ.getTypeOfRsc()].amountForVictoryIsReached()) || (rscToTake != lastRscTaken))
             {
               produ = takeRessourceFromNewProducer(rscToTake);
             }
@@ -149,7 +158,7 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
         catch (RemoteException re) { System.out.println(re) ; }
       }
 
-      nb_turn++;
+      lastRscTaken = rscToTake;
 
       // Write the logs with coordinator
       for(i=0; i<stock.length; i++)
