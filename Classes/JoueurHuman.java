@@ -44,10 +44,11 @@ public class JoueurHuman extends JoueurCommon implements Runnable
     input = inputReader.nextLine();
 
     // Verifying input data
-    while(input.length() > 1 && nb_attempt > 0)
+    while(((input.length() > 1) || ((Integer.parseInt(input) > this.stock.length-1) || (Integer.parseInt(input) < 0))) && nb_attempt > 0)
     {
-      System.out.println("Veuillez rentrer un chiffre svp. " + nb_attempt + " tentatives restantes.");
+      System.out.println("Veuillez rentrer un chiffre compris entre 0 et " + (this.stock.length-1) + " svp. " + nb_attempt + " tentatives restantes.");
       input = inputReader.nextLine();
+      nb_attempt--;
     }
 
     if(nb_attempt > 0)
@@ -104,10 +105,11 @@ public class JoueurHuman extends JoueurCommon implements Runnable
     input = inputReader.nextLine();
 
     // Verifying input data
-    while(input.length() > 1 && nb_attempt > 0)
+    while(((input.length() > 1) || (Integer.parseInt(input) > this.players.length) || (Integer.parseInt(input) < 1)) && (nb_attempt > 0))
     {
-      System.out.println("Veuillez rentrer un chiffre svp. " + nb_attempt + " tentatives restantes.");
+      System.out.println("Veuillez rentrer un chiffre compris entre 1 et " + this.players.length + " svp. " + nb_attempt + " tentatives restantes.");
       input = inputReader.nextLine();
+      nb_attempt--;
     }
 
     if(nb_attempt > 0) // The input is valid
@@ -123,10 +125,15 @@ public class JoueurHuman extends JoueurCommon implements Runnable
 
     // ----------------------------
     // Asking for a ressource type
-    while(input.length() > 1 && nb_attempt > 0)
+    System.out.println("Veuillez entrer le type de ressource souhaitée.");
+    input = inputReader.nextLine();
+
+    // Verifying input data
+    while(((input.length() > 1) || ((Integer.parseInt(input) > this.stock.length-1) || (Integer.parseInt(input) < 0))) && nb_attempt > 0)
     {
-      System.out.println("Veuillez rentrer un chiffre svp. " + nb_attempt + " tentatives restantes.");
+      System.out.println("Veuillez rentrer un chiffre compris entre 0 et " + (this.stock.length-1) + " svp. " + nb_attempt + " tentatives restantes.");
       input = inputReader.nextLine();
+      nb_attempt--;
     }
 
     // Verifying input data
@@ -291,22 +298,32 @@ public class JoueurHuman extends JoueurCommon implements Runnable
         this.isWatchingTime--;
         if(isWatchingTime == 0)
         {
-          System.out.println("Vous vous protegé du vol, vous ne pouvez donc pas chercher de ressource.");
           playerServ.protectFromStealing(false);
+        }
+        else
+        {
+          System.out.println("Vous vous protegé du vol, vous ne pouvez donc pas chercher de ressource.");
         }
       }
 
       // If we are not punnished or observing, we can play
       if(!isPunnished && isWatchingTime == 0)
       {
+        System.out.println("Voici votre stock : ");
+        for(i=0; i<stock.length; i++)
+        {
+          if(stock[i] != null)
+          {
+            System.out.println("  ressource " + i + " : " + stock[i].getAmount());
+          }
+        }
         System.out.println("C'est à vous de jouer ! Veuillez entrer une commande svp.");
-
-        // Get the input command
-        input = inputReader.nextLine();
 
         // Treatement of the input command
         while((wrongCmd) && (nbTry > 0))
         {
+          // Get the input command
+          input = inputReader.nextLine();
           switch(input)
           {
             case "get ressource":

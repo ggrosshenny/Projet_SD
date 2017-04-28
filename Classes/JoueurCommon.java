@@ -224,6 +224,7 @@ public class JoueurCommon
     else
     {
       i = Integer.parseInt(playerId.substring(playerId.length()-1, playerId.length()));
+      i--;
     }
 
     try
