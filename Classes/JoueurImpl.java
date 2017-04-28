@@ -22,9 +22,9 @@ public class JoueurImpl extends Agent implements IJoueur
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
   private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
   private Joueur[] watchers;      // List of players watching for ohter player's actions
-  private Runnable player;        // runnable of the thread
+  private JoueurCommon player;    // Player object of the thread
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
-  private int nb_TypeRsc;          // Number of different types of ressource
+  private int nb_TypeRsc;         // Number of different types of ressource
 
   // Methods
   public JoueurImpl(String id0, int type0, String coord, boolean isCoop0, boolean isTbT, int nb_TypeRsc0)
@@ -52,6 +52,7 @@ public class JoueurImpl extends Agent implements IJoueur
   {
     int i = 0;
     Producteur tempProducer;
+    Runnable playerRunnable = null;
     this.stock = new Ressource[this.nb_TypeRsc];
     this.players = Joueurs;
     try
@@ -79,11 +80,10 @@ public class JoueurImpl extends Agent implements IJoueur
     {
       if(isCoop) // Cooperative player without turn waiting
       {
-        JoueurCoop pl;
         player = new JoueurCoop(this, id, coordinateur, 3);
-        pl = (JoueurCoop)player;
-        pl.setStock(this.stock);
-        pl.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
+        playerRunnable = (JoueurCoop)player;
+        player.setStock(this.stock);
+        player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
       }
       if(!isCoop) // Non-cooperative player without turn waiting
       {
@@ -94,7 +94,10 @@ public class JoueurImpl extends Agent implements IJoueur
     {
       if(isCoop) // Cooperative player with turn waiting
       {
-        // TO DO
+        player = new JoueurCoopTbT(this, id, coordinateur, 3);
+        playerRunnable = (JoueurCoopTbT)player;
+        player.setStock(this.stock);
+        player.setProducteursAndPlayersAddresses(Joueurs, Producteurs);
       }
       if(!isCoop) // Non-cooperative player with turn waiting
       {
@@ -103,8 +106,26 @@ public class JoueurImpl extends Agent implements IJoueur
     }
 
     // Creating thread for the client part of the player
-    playerClient = new Thread(player, id + "_threadClient");
+    playerClient = new Thread(playerRunnable, id + "_threadClient");
     playerClient.start();
+  }
+
+
+  /**
+  * Method : turnStart
+  * Param : void
+  * Desc : Signal received from coordinator. Start the turn of the player client part.
+  * Return : void
+  **/
+  public void turnStart()
+  {
+    if(playerClient.isAlive() && isTurnByTurn)
+    {
+      synchronized(this)
+      {
+        this.notify();
+      }
+    }
   }
 
 
@@ -119,31 +140,9 @@ public class JoueurImpl extends Agent implements IJoueur
     System.out.println(message);
     if(idWinner != this.id)
     {
-      if(!isTurnByTurn)
+      if(playerClient.isAlive())
       {
-        if(isCoop) // Cooperative player without turn waiting
-        {
-          JoueurCoop pl = (JoueurCoop)player;
-          if(playerClient.isAlive())
-          {
-            pl.stopClient();
-          }
-        }
-        if(!isCoop) // Non-cooperative player without turn waiting
-        {
-          //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
-        }
-      }
-      else
-      {
-        if(isCoop) // Cooperative player with turn waiting
-        {
-          // TO DO
-        }
-        if(!isCoop) // Non-cooperative player with turn waiting
-        {
-          // TO DO
-        }
+        player.stopClient();
       }
     }
   }
@@ -162,20 +161,29 @@ public class JoueurImpl extends Agent implements IJoueur
    {
      if(!isWatcher)
      {
-       return stock[rscType].rmvRessource(amount);
+       if(playerClient.isAlive())
+       {
+         player.isProtectingFromStealing(3);
+         isWatcher = true;
+         return stock[rscType].rmvRessource(amount);
+       }
+       return 0;
      }
      else
      {
-       int idPlayer = Integer.parseInt(id.substring(id.length()-1, id.length()));
-       IJoueur playerTryingToSteal;
-       try
+       if(playerClient.isAlive())
        {
-         playerTryingToSteal = (IJoueur)Naming.lookup(players[idPlayer]);
-         playerTryingToSteal.punish();
+         int idPlayer = Integer.parseInt(id.substring(id.length()-1, id.length()));
+         IJoueur playerTryingToSteal;
+         try
+         {
+           playerTryingToSteal = (IJoueur)Naming.lookup(players[idPlayer-1]);
+           playerTryingToSteal.punish();
+         }
+         catch (NotBoundException re) { System.out.println(re) ; }
+         catch (RemoteException re) { System.out.println(re) ; }
+         catch (MalformedURLException e) { System.out.println(e) ; }
        }
-       catch (NotBoundException re) { System.out.println(re) ; }
-       catch (RemoteException re) { System.out.println(re) ; }
-       catch (MalformedURLException e) { System.out.println(e) ; }
        return 0;
      }
    }
@@ -189,32 +197,23 @@ public class JoueurImpl extends Agent implements IJoueur
    **/
    public void punish()
    {
-     if(!isTurnByTurn)
+     if(playerClient.isAlive())
      {
-       if(isCoop) // Cooperative player without turn waiting
-       {
-         JoueurCoop pl = (JoueurCoop)player;
-         if(playerClient.isAlive())
-         {
-           pl.punishement();
-         }
-       }
-       if(!isCoop) // Non-cooperative player without turn waiting
-       {
-         //JoueurIndiv joueur = new JoueurIndiv(coord, stock, prod, 3);
-       }
+       player.punishement();
      }
-     else
-     {
-       if(isCoop) // Cooperative player with turn waiting
-       {
-         // TO DO
-       }
-       if(!isCoop) // Non-cooperative player with turn waiting
-       {
-         // TO DO
-       }
-     }
+   }
+
+
+   /**
+   * Method : changeStealPercentage
+   * Param : int, newPercentage - new steal percentage
+   * Desc : Change the steal percentage on the Thread
+   * Return : void
+   **/
+   public synchronized void changeStealPercentage(int newPercentage)
+   {
+     System.out.println("Je change le pourcentage de vol en : " + newPercentage);
+     player.setStealPercentage(newPercentage);
    }
 
 

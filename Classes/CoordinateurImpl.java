@@ -23,7 +23,9 @@
    private int nb_producersEmpty;
    private boolean barrier;
    private int nb_TypeRsc;
+   private int CurrentPlayerPLaying;
    private ArrayList<ArrayList<ArrayList<String>>> gameLog;
+   private boolean isTbT;
 
 
    public CoordinateurImpl(String[] args)
@@ -38,7 +40,16 @@
 			this.nb_players = Integer.parseInt(args[2]);
 			this.nb_producers = Integer.parseInt(args[3]);
       this.nb_TypeRsc = Integer.parseInt(args[args.length-1]);
+      if(Integer.parseInt(args[args.length-2]) == 0)
+      {
+        this.isTbT = true;
+      }
+      else
+      {
+        this.isTbT = false;
+      }
       this.nb_playersReady = 0;
+      this.CurrentPlayerPLaying = 0;
       this.barrier = false;
 			this.Players = new String[nb_players];
 			this.Producers = new String[nb_producers][nb_producers];
@@ -84,10 +95,19 @@
 
    public synchronized void PlayerReady()
    {
+     IJoueur tempPlayer;
      this.nb_playersReady++;
      if(this.nb_playersReady == this.nb_players)
      {
        barrier = true;
+       try
+       {
+         tempPlayer = (IJoueur)Naming.lookup(Players[0]);
+         tempPlayer.turnStart();
+       }
+       catch (NotBoundException re) { System.out.println(re) ; }
+       catch (RemoteException re) { System.out.println(re) ; }
+       catch (MalformedURLException e) { System.out.println(e) ; }
      }
    }
 
@@ -96,6 +116,38 @@
   {
     return barrier;
   }
+
+
+  /**
+  * Method : endOfTurn
+  * Param : String, id - Id of the player sending the message
+  * Desc : When receiving a message from a Player who end his turn, signal to
+  *        the next one to begin his turn.
+  * Return : void
+  **/
+  public synchronized void endOfTurn(String id)
+  {
+    String nextPlayerAddr;
+    IJoueur tempPlayer;
+    // Getting player number
+    int playerNumber = Integer.parseInt(id.substring(id.length()-1, id.length()));;
+
+    // Verifying the number of the player to identify the next player to notify
+    if((playerNumber-1) == CurrentPlayerPLaying)
+    {
+      CurrentPlayerPLaying = (CurrentPlayerPLaying + 1)%this.nb_players;
+      nextPlayerAddr = Players[CurrentPlayerPLaying];
+      try
+      {
+        tempPlayer = (IJoueur)Naming.lookup(nextPlayerAddr);
+        tempPlayer.turnStart();
+      }
+      catch (NotBoundException re) { System.out.println(re) ; }
+      catch (RemoteException re) { System.out.println(re) ; }
+      catch (MalformedURLException e) { System.out.println(e) ; }
+    }
+  }
+
 
 
   /**
@@ -111,14 +163,28 @@
     IJoueur tempJoueur;
 		Producteur tempProd;
     String message;
+    int i;
+    int test = 0;
 
     this.nb_producersEmpty++;
 
     if((this.nb_producersEmpty == this.nb_producers) && (!finished))
     {
+      for(i=0; i<Players.length; i++)
+      {
+        try
+        {
+					tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
+					tempJoueur.changeStealPercentage(85);
+				}
+				catch (NotBoundException re) { System.out.println(re) ; }
+				catch (RemoteException re) { System.out.println(re) ; }
+				catch (MalformedURLException e) { System.out.println(e) ; }
+      }
+
       // Wait for a player notification
       try {
-          Thread.sleep(200);
+          Thread.sleep(1000);
       } catch(InterruptedException ex) {
           Thread.currentThread().interrupt();
       }
@@ -132,7 +198,7 @@
       // Else notify everyone that the game is ended and the reason why.
       finished = true;
       message = new String("All producers are empty. The game end without winner.");
-      for(int i = 0; i < this.Players.length; i++) // tell to all players that game is ended
+      for(i = 0; i < this.Players.length; i++) // tell to all players that game is ended
       {
 				try
         {
@@ -144,7 +210,7 @@
 				catch (MalformedURLException e) { System.out.println(e) ; }
 
 			}
-			for(int i = 0; i < this.Producers.length; i++) // Tell to all producers that game is ended
+			for(i = 0; i < this.Producers.length; i++) // Tell to all producers that game is ended
       {
 				for(int j = 0; j < this.Producers[i].length; j++)
         {
@@ -161,6 +227,17 @@
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
+      // Write logs in files
+      LogWriter logEntity;
+      if(this.isTbT)
+      {
+        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 1);
+      }
+      else
+      {
+        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 10);
+      }
+			logEntity.writeLogFiles();
     }
   }
 
@@ -218,7 +295,17 @@
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
-			LogWriter logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 10);
+
+      // Write logs in files
+      LogWriter logEntity;
+      if(this.isTbT)
+      {
+        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 1);
+      }
+      else
+      {
+        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 10);
+      }
 			logEntity.writeLogFiles();
 			return true;
 		}

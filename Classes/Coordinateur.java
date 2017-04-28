@@ -9,9 +9,9 @@ public class Coordinateur {
 
     public static void main(String args[]) {
 
-		if (args.length < 7)
+		if (args.length < 9)
 		{
-			System.out.println("Usage : java Coordinateur <machine du Serveur> <port du rmiregistry> <nombre_joueurs> <nombre_producteurs> <liste_Joueurs> <liste_Producteurs> <addr_coordinateur> <nb_typeRsc>") ;
+			System.out.println("Usage : java Coordinateur <machine du Serveur> <port du rmiregistry> <nombre_joueurs> <nombre_producteurs> <liste_Joueurs> <liste_Producteurs> <addr_coordinateur> <isTbT> <nb_typeRsc>") ;
 			System.exit(0) ;
 		}
 
@@ -24,7 +24,7 @@ public class Coordinateur {
     try {
 
 			CoordinateurImpl Coord = new CoordinateurImpl(args);
-			Naming.rebind(args[args.length - 2], Coord);
+			Naming.rebind(args[args.length - 3], Coord);
 
 			int i, j;
 

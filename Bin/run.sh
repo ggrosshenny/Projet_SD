@@ -19,6 +19,7 @@ fi
 
 rmiregistry &
 
+
 # Creation du répertoire de log et suppression des fichiers logs exitants
 if [ -e ../logs ]
 then
@@ -27,6 +28,8 @@ then
 else
 	mkdir ../logs
 fi
+
+echo "Creating game... Please hold on."
 
 # Addresse du coordinateur
 Coordinateur="rmi://localhost:$1/coordinateur"
@@ -68,14 +71,13 @@ echo $rscTypeCtrlList
 # Création des joueurs
 for i in $PlayerIDList
 do
-  xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 1 $4 &
+  xterm -e java Joueur localhost $1 $i 0 $Coordinateur 0 0 $4 &
 done
 
 
 # Création du coordinateur de la partie
-echo "Creating game... Please hold on."
 sleep 2
-java Coordinateur localhost $1 $3 $2 $PlayerIDList $ProdIDList $Coordinateur $4 &
+java Coordinateur localhost $1 $3 $2 $PlayerIDList $ProdIDList $Coordinateur 0 $4 &
 echo "Done."
 
 exit 0

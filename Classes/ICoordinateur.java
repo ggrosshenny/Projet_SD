@@ -18,9 +18,13 @@ public interface ICoordinateur extends Remote
   public boolean playerStart()
     throws RemoteException;
 
+  public void endOfTurn(String id)
+    throws RemoteException;
+
   public void ProducerEmpty()
     throws RemoteException;
 
   public void setLog(String id, int[] Stock)
     throws RemoteException;
+
 }
