@@ -15,7 +15,7 @@ public class setLogPlayerTask extends TimerTask
   private String id;
   private ICoordinateur coordObject;
 
-  public setLogPlayerTask(Ressource[] stock0, String coord0, int timer0, String id0)
+  public setLogPlayerTask(Ressource[] stock0, String coord0, String id0)
   {
     try
     {
