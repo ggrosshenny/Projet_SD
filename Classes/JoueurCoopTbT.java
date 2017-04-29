@@ -41,12 +41,12 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
     // Waiting on starting blocks !
     try
     {
-      coord.PlayerReady(); // Say to the coordinator that we are ready
+      coord.AgentReady(); // Say to the coordinator that we are ready
     }
     catch (RemoteException re) { System.out.println(re) ; }
 
     // Control message
-    System.out.println("Je commence mon travail !");
+    System.out.println("Je suis un joueur coop tbt et je commence mon travail !");
 
     while(!finished && running)
     {
@@ -154,15 +154,6 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
         }
       }
 
-      if(!finished)
-      {
-        try
-        {
-          this.coord.endOfTurn(this.id);
-        }
-        catch (RemoteException re) { System.out.println(re) ; }
-      }
-
       lastRscTaken = rscToTake;
 
       // Write the logs with coordinator
@@ -175,6 +166,15 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
         this.coord.setLog(this.id, this.stockStatus);
       }
       catch (RemoteException re) { System.out.println(re) ; }
+
+      if(!finished)
+      {
+        try
+        {
+          this.coord.endOfTurn(this.id);
+        }
+        catch (RemoteException re) { System.out.println(re) ; }
+      }
 
     }
 

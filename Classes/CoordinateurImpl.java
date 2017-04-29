@@ -19,7 +19,7 @@
    public int nb_producers;
 
    private boolean finished;
-   private int nb_playersReady;
+   private int nb_agentReady;
    private int nb_producersEmpty;
    private boolean barrier;
    private int nb_TypeRsc;
@@ -51,7 +51,7 @@
       {
         this.isTbT = false;
       }
-      this.nb_playersReady = 0;
+      this.nb_agentReady = 0;
       this.CurrentPlayerPLaying = 0;
       this.barrier = false;
 			this.Players = new String[nb_players];
@@ -72,7 +72,7 @@
         }
         this.gameLog.add(playerLog);
       }
-      
+
       // Creation of producers log ArrayList (idem)
       this.gameLogProducers = new ArrayList<ArrayList<String>>();
       ArrayList<String> logPerRscProducer;
@@ -105,12 +105,46 @@
 	   }
    }
 
-   public synchronized void PlayerReady()
+
+   /**
+   * Method : AgentReady
+   * Param : void
+   * Desc : Called by all agent at the beginning of the game and launch the game
+   *        when all agents are called the method.
+   * Return : void
+   **/
+   public synchronized void AgentReady()
    {
      IJoueur tempPlayer;
-     this.nb_playersReady++;
-     if(this.nb_playersReady == this.nb_players)
+     Producteur tempProd;
+     int i = 0;
+     int j = 0;
+
+     // Increment the number of agent that are ready
+     this.nb_agentReady++;
+
+     // If all agents are ready
+     if(this.nb_agentReady == this.nb_players)
      {
+
+       for(i = 0; i < this.Producers.length; i++) // Tell to all producers that game is ended
+       {
+ 				for(j = 0; j < this.Producers[i].length; j++)
+         {
+ 					try
+           {
+ 						if(Producers[i][j] != null)
+             {
+ 							tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
+ 						 	tempProd.begin();
+ 						}
+ 					}
+ 					catch (NotBoundException re) { System.out.println(re) ; }
+ 					catch (RemoteException re) { System.out.println(re) ; }
+ 					catch (MalformedURLException e) { System.out.println(e) ; }
+ 				}
+ 			}
+
        barrier = true;
        try
        {
@@ -182,12 +216,13 @@
 
     if((this.nb_producersEmpty == this.nb_producers) && (!finished))
     {
+      System.out.println("All producers are empty !");
       for(i=0; i<Players.length; i++)
       {
         try
         {
 					tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
-					tempJoueur.changeStealPercentage(85);
+					tempJoueur.changeStealPercentage(101);
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
@@ -196,7 +231,7 @@
 
       // Wait for a player notification
       try {
-          Thread.sleep(500);
+          Thread.sleep(200);
       } catch(InterruptedException ex) {
           Thread.currentThread().interrupt();
       }
@@ -243,11 +278,11 @@
       LogWriter logEntity;
       if(this.isTbT)
       {
-        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 1);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 1);
       }
       else
       {
-        logEntity = new LogWriter(this.gameLog, new ArrayList<ArrayList<String>>(), 10);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 10);
       }
 			logEntity.writeLogFiles();
     }
@@ -272,7 +307,7 @@
        this.gameLog.get(idPlayer-1).get(i).add(valRsc);
      }
    }
-   
+
    /**
    * Method : setLog
    * Param : String, id - the id of the producer calling the Method

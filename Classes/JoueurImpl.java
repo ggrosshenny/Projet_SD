@@ -49,6 +49,8 @@ public class JoueurImpl extends Agent implements IJoueur
       this.isTurnByTurn = isTbT;
     }
     this.nb_TypeRsc = nb_TypeRsc0;
+
+    System.out.println("JoueurImpl créé !");
   }
 
 
@@ -242,7 +244,6 @@ public class JoueurImpl extends Agent implements IJoueur
    **/
    public synchronized void changeStealPercentage(int newPercentage)
    {
-     System.out.println("Je change le pourcentage de vol en : " + newPercentage);
      player.setStealPercentage(newPercentage);
    }
 

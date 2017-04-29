@@ -4,6 +4,8 @@
  **/
 
  import java.rmi.server.UnicastRemoteObject ;
+ import java.rmi.*;
+ import java.net.MalformedURLException;
  import java.rmi.RemoteException ;
  import java.util.Timer;
  import java.util.TimerTask;
@@ -17,6 +19,7 @@
    private int timeBeforeProduction;  // Time in ms before ressource production
    public Toolkit toolkit;            // Toolkit used by TimerTask
    public Timer timer;                // Timer used to shedule the task
+   private boolean thereIsHuman;             // Boolean to know is the game is turn bu turn
 
    // Methods
 
@@ -29,23 +32,50 @@
    * Desc : constructor of the Producteur class
    * return : void
    **/
-   public ProducteurImpl(String id0, String coord, int typeRsc, int amountRsc, int amountForVictRsc,int timeBeforeProduction0)
+   public ProducteurImpl(String id0, String coord, int typeRsc, int amountRsc, int amountForVictRsc,int timeBeforeProduction0, boolean thereIsHuman0)
       throws RemoteException
    {
      super(id0, 0, coord);
+
      this.production = new Ressource(typeRsc, amountRsc, amountForVictRsc);
      this.amountToTake = 3;
+     this.timeBeforeProduction = timeBeforeProduction0;
      toolkit = Toolkit.getDefaultToolkit();
      timer = new Timer();
-     timer.schedule(new ProductionTask(production, coord),
-	                  0,        //initial delay
-	                  timeBeforeProduction0);  //subsequent rate
-	 	  
-	// Starting log system that will give the stock status each 1000 ms
-    timer.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
-                   0,        //initial delay
-                   10);      //subsequent rate
+     this.thereIsHuman = thereIsHuman0;
    }
+
+
+  /**
+  * Method : begin
+  * Param : void
+  * Desc : start the tasks of the producer (log task and production task)
+  * Return : void
+  **/
+  public synchronized void begin()
+  {
+    timer.schedule(new ProductionTask(this.production, this.coordinateur),
+	                  0,        //initial delay
+	                  this.timeBeforeProduction);  //subsequent rate
+
+
+    // initialisation of log system
+    if(thereIsHuman)
+    {
+      System.out.println("Il y a un humain !");
+      // Starting log system that will give the producer status each 10 ms
+      timer.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
+                     0,        //initial delay
+                     this.timeBeforeProduction/5);      //subsequent rate
+    }
+    else
+    {
+      // Starting log system that will give the producer status each 10 ms
+      timer.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
+                     0,        //initial delay
+                     10);      //subsequent rate
+    }
+  }
 
 
    /**

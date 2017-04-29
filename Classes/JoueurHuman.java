@@ -254,7 +254,7 @@ public class JoueurHuman extends JoueurCommon implements Runnable
     // Waiting on starting blocks !
     try
     {
-      coord.PlayerReady(); // Say to the coordinator that we are ready
+      coord.AgentReady(); // Say to the coordinator that we are ready
     }
     catch (RemoteException re) { System.out.println(re) ; }
 

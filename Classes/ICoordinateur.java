@@ -12,7 +12,7 @@ public interface ICoordinateur extends Remote
   public boolean endGame(String idJoueur)
     throws RemoteException;
 
-  public void PlayerReady()
+  public void AgentReady()
     throws RemoteException;
 
   public boolean playerStart()
@@ -26,7 +26,7 @@ public interface ICoordinateur extends Remote
 
   public void setLog(String id, int[] Stock)
     throws RemoteException;
-    
+
   public void setLogProd(String id, int Stock)
     throws RemoteException;
 

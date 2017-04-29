@@ -51,7 +51,7 @@ public class JoueurIndiv extends JoueurCommon implements Runnable
     // Sorry for active waiting...
     try
     {
-      coord.PlayerReady(); // Say to the coordinator that we are ready
+      coord.AgentReady(); // Say to the coordinator that we are ready
     }
     catch (RemoteException re) { System.out.println(re) ; }
 

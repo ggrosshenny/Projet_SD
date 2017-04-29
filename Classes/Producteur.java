@@ -3,6 +3,9 @@ import java.rmi.RemoteException ;
 
 public interface Producteur extends Remote
 {
+  public void begin()
+    throws RemoteException;
+
   public int takeRsc()
     throws RemoteException;
 
