@@ -176,15 +176,6 @@ public class JoueurCoop extends JoueurCommon implements Runnable
     {
     }
 
-    System.out.println("J'ai pu collecter : ");
-    for(i=0; i<stock.length; i++)
-    {
-      if(stock[i] != null)
-      {
-        System.out.println("  ressource " + i + " : " + stock[i].getAmount());
-      }
-    }
-
   }
 
 

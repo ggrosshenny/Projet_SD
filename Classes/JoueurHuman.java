@@ -409,14 +409,5 @@ public class JoueurHuman extends JoueurCommon implements Runnable
     {
     }
 
-    System.out.println("Le resultat de votre partie est : ");
-    for(i=0; i<stock.length; i++)
-    {
-      if(stock[i] != null)
-      {
-        System.out.println("  ressource " + i + " : " + stock[i].getAmount());
-      }
-    }
-
   }
 }

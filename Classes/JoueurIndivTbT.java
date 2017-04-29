@@ -192,16 +192,7 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
     while(!finished && running)
     {
     }
-
-    System.out.println("J'ai pu collecter : ");
-    for(i=0; i<stock.length; i++)
-    {
-      if(stock[i] != null)
-      {
-        System.out.println("  ressource " + i + " : " + stock[i].getAmount());
-      }
-    }
-
+    
   }
 
 

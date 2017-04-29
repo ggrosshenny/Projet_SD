@@ -20,7 +20,7 @@ public class JoueurImpl extends Agent implements IJoueur
   private String[] players;       // Addresses of all players
   private boolean isTurnByTurn;   // Boolean to know if we are in tur by turn mod
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
-  private boolean isWatcher;       // Boolean to know if the player is watching fo other player's actions or not
+  private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
   private boolean isHuman;        // Boolean to know if the player is human
   private Joueur[] watchers;      // List of players watching for ohter player's actions
   private JoueurCommon player;    // Player object of the thread
@@ -165,12 +165,22 @@ public class JoueurImpl extends Agent implements IJoueur
   **/
   public void gameIsOver(String message, String idWinner)
   {
+    int i = 0;
     System.out.println(message);
     if(idWinner != this.id)
     {
       if(playerClient.isAlive())
       {
         player.stopClient();
+        // Print the summary of the game
+        System.out.println("J'ai pu collecter : ");
+        for(i=0; i<stock.length; i++)
+        {
+          if(stock[i] != null)
+          {
+            System.out.println("  ressource " + i + " : " + stock[i].getAmount());
+          }
+        }
       }
     }
   }
@@ -258,7 +268,7 @@ public class JoueurImpl extends Agent implements IJoueur
    {
      this.isWatcher = protectStatus;
    }
-   
+
    /**
     * Method : getRscSum
     * Param : void
