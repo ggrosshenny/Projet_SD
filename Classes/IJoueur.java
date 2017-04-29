@@ -26,4 +26,7 @@ public interface IJoueur extends Remote
 
   public void changeStealPercentage(int newPercentage)
     throws RemoteException;
+    
+  public int getRscSum()
+	throws RemoteException;
 }

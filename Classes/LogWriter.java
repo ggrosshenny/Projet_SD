@@ -14,16 +14,22 @@ public class LogWriter {
 	//Attributes
 	private ArrayList<ArrayList<ArrayList<String>>> players_logs;		// String array containing the logs of every player
 	private ArrayList<ArrayList<String>> producers_logs;				// String array containing the logs of every producers
+	
+	private int[] playersRanking;
+	private int[] rscAmountPerPlayer;
 	private int timeBetweenTicks;
 
 
 	//Constructor
-	public LogWriter ( ArrayList<ArrayList<ArrayList<String>>> playersLogs, ArrayList<ArrayList<String>> prodLogs, int timer){
+	public LogWriter ( ArrayList<ArrayList<ArrayList<String>>> playersLogs, ArrayList<ArrayList<String>> prodLogs, int[] ranking, int[] totalRscAmount, int timer){
 
 			players_logs = new ArrayList<ArrayList<ArrayList<String>>>();
 			players_logs = playersLogs;
 			producers_logs = new ArrayList<ArrayList<String>>();
 			producers_logs = prodLogs;
+			
+			playersRanking = ranking;
+			rscAmountPerPlayer = totalRscAmount;
 
 			timeBetweenTicks = timer;
 			System.out.println(prodLogs.size());
@@ -104,6 +110,19 @@ public class LogWriter {
 				}
 				catch (IOException e) { System.out.println(e); }
 			}
+			
+			// Generate the leadboard log file
+			try{
+				logfile = new PrintWriter("players_ranking.bat", "UTF-8");
+				logfile.println("Game leaderboard");
+				
+				for(int i = 0; i < playersRanking.length; i++){
+					logfile.println("Player " + (playersRanking[i]+1) + " - " + rscAmountPerPlayer[playersRanking[i]] + " Ressources owned");
+				}
+				logfile.close();
+				Files.move(Paths.get("../Bin/players_ranking.bat"), Paths.get("../logs/"+gameLogDir+"/players_ranking.bat"));
+			}
+			catch (IOException e) { System.out.println(e); }
 		}
 	}
 }

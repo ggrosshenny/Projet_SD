@@ -258,6 +258,20 @@ public class JoueurImpl extends Agent implements IJoueur
    {
      this.isWatcher = protectStatus;
    }
+   
+   /**
+    * Method : getRscSum
+    * Param : void
+    * Desc : return the sum of the amounts of every ressources owned by the player
+    * Return : int
+    **/
+   public int getRscSum(){
+	int sum = 0;
+	for (int i = 0; i < this.stock.length; i++){
+	  sum+= this.stock[i].getAmount();
+	}
+	return sum;
+  }
 
 
 }

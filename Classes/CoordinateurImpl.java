@@ -274,15 +274,44 @@
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
+			
+	  // Calculate the total amount of ressources per player, then sort them 
+	  // from the one with the most to the one with the less
+	  int[] totalRscAmountPerPlayer = new int[this.nb_players];
+	  int[] temp = new int[this.nb_players];
+		
+	  for (i = 0; i < this.nb_players; i++){
+		  try{
+			  
+			tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
+			totalRscAmountPerPlayer[i] = tempJoueur.getRscSum();
+		  }
+		  catch (NotBoundException re) { System.out.println(re) ; }
+		  catch (RemoteException re) { System.out.println(re) ; }
+		  catch (MalformedURLException e) { System.out.println(e) ; }
+	  }
+	  
+	  System.arraycopy(totalRscAmountPerPlayer,0, temp, 0, totalRscAmountPerPlayer.length);
+	  int[] Ranking = new int[this.nb_players];
+	  int idx = 0;
+	  for(i = 0; i < this.nb_players; i++){
+	    for(int j = 0; j < this.nb_players; j++){
+				
+		  if(temp[idx] < temp[j])
+		    idx = j;
+		}
+		Ranking[i] = idx;
+		temp[idx] = 0;
+	  }
       // Write logs in files
       LogWriter logEntity;
       if(this.isTbT)
       {
-        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 1);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, Ranking, totalRscAmountPerPlayer, 1);
       }
       else
       {
-        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 10);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, Ranking, totalRscAmountPerPlayer, 10);
       }
 			logEntity.writeLogFiles();
     }
@@ -368,43 +397,74 @@
 		Producteur tempProd;
 		if(finished == false){
 			finished = true;
-      System.out.println("La partie est finie.");
-      String message = new String("The game is over, the winner is : " + idJoueur);
-			for(int i = 0; i < this.Players.length; i++){
+		// Calculate the total amount of ressources per player, then sort them 
+		// from the one with the most to the one with the less
+		
+		int[] totalRscAmountPerPlayer = new int[this.nb_players];
+		int[] temp = new int[this.nb_players];
+		
+		for (int i = 0; i < this.nb_players; i++){
+		  try{
+			  
+			tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
+			totalRscAmountPerPlayer[i] = tempJoueur.getRscSum();
+		  }
+		  catch (NotBoundException re) { System.out.println(re) ; }
+		  catch (RemoteException re) { System.out.println(re) ; }
+		  catch (MalformedURLException e) { System.out.println(e) ; }
+		}
+		System.arraycopy(totalRscAmountPerPlayer, 0, temp, 0, totalRscAmountPerPlayer.length);
+		int[] Ranking = new int[this.nb_players];
+		int idx = 0;
+		for(int i = 0; i < this.nb_players; i++){
+			for(int j = 0; j < this.nb_players; j++){
+				
+				if(temp[idx] < temp[j])
+					idx = j;
+			}
+			Ranking[i] = idx;
+			temp[idx] = 0;
+		}
+		
+
+		System.out.println("La partie est finie.");
+		String message = new String("The game is over, the winner is : " + idJoueur);
+		
+		for(int i = 0; i < this.Players.length; i++){
+
+			try {
+				tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
+				tempJoueur.gameIsOver(message, idJoueur);
+			}
+			catch (NotBoundException re) { System.out.println(re) ; }
+			catch (RemoteException re) { System.out.println(re) ; }
+			catch (MalformedURLException e) { System.out.println(e) ; }
+
+		}
+		for(int i = 0; i < this.Producers.length; i++){
+			for(int j = 0; j < this.Producers[i].length; j++){
 
 				try {
-					tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
-					tempJoueur.gameIsOver(message, idJoueur);
+					if(Producers[i][j] != null){
+						tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
+					 	tempProd.gameIsOver(message);
+					}
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
 				catch (MalformedURLException e) { System.out.println(e) ; }
-
 			}
-			for(int i = 0; i < this.Producers.length; i++){
-				for(int j = 0; j < this.Producers[i].length; j++){
-
-					try {
-						if(Producers[i][j] != null){
-							tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
-						 	tempProd.gameIsOver(message);
-						}
-					}
-					catch (NotBoundException re) { System.out.println(re) ; }
-					catch (RemoteException re) { System.out.println(re) ; }
-					catch (MalformedURLException e) { System.out.println(e) ; }
-				}
-			}
+		}
 
       // Write logs in files
       LogWriter logEntity;
       if(this.isTbT)
       {
-        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 1);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, Ranking, totalRscAmountPerPlayer, 1);
       }
       else
       {
-        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, 10);
+        logEntity = new LogWriter(this.gameLog, this.gameLogProducers, Ranking, totalRscAmountPerPlayer, 10);
       }
 			logEntity.writeLogFiles();
 			return true;
