@@ -117,7 +117,7 @@ public class LogWriter {
 				logfile.println("Game leaderboard");
 				
 				for(int i = 0; i < playersRanking.length; i++){
-					logfile.println("Player " + (playersRanking[i]+1) + " - " + rscAmountPerPlayer[playersRanking[i]] + " Ressources owned");
+						logfile.println("Player " + (playersRanking[i]+1) + " - " + rscAmountPerPlayer[playersRanking[i]] + " Ressources owned");
 				}
 				logfile.close();
 				Files.move(Paths.get("../Bin/players_ranking.bat"), Paths.get("../logs/"+gameLogDir+"/players_ranking.bat"));

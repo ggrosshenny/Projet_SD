@@ -397,33 +397,38 @@
 		Producteur tempProd;
 		if(finished == false){
 			finished = true;
+		
 		// Calculate the total amount of ressources per player, then sort them 
 		// from the one with the most to the one with the less
-		
+		int[] Ranking = new int[this.nb_players];
 		int[] totalRscAmountPerPlayer = new int[this.nb_players];
 		int[] temp = new int[this.nb_players];
 		
+		Ranking[0] = Integer.parseInt(idJoueur.substring(idJoueur.length() - 1))-1;
 		for (int i = 0; i < this.nb_players; i++){
 		  try{
 			  
 			tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
 			totalRscAmountPerPlayer[i] = tempJoueur.getRscSum();
+			
 		  }
 		  catch (NotBoundException re) { System.out.println(re) ; }
 		  catch (RemoteException re) { System.out.println(re) ; }
 		  catch (MalformedURLException e) { System.out.println(e) ; }
 		}
+		
 		System.arraycopy(totalRscAmountPerPlayer, 0, temp, 0, totalRscAmountPerPlayer.length);
-		int[] Ranking = new int[this.nb_players];
+		temp[Integer.parseInt(idJoueur.substring(idJoueur.length() - 1))-1] = 0;
 		int idx = 0;
-		for(int i = 0; i < this.nb_players; i++){
-			for(int j = 0; j < this.nb_players; j++){
+
+		for(int i = 1; i < this.nb_players; i++){
+				for(int j = 0; j < this.nb_players; j++){
 				
-				if(temp[idx] < temp[j])
-					idx = j;
-			}
-			Ranking[i] = idx;
-			temp[idx] = 0;
+					if(temp[idx] < temp[j])
+						idx = j;
+				}
+				Ranking[i] = idx;
+				temp[idx] = 0;
 		}
 		
 
