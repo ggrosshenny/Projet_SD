@@ -7,18 +7,18 @@ public class ProducteurServeur
   {
     if(args.length != 8)
     {
-      System.out.println("Usage : producteurServeur port id coord prodType prodAmount prodAmoutForVictory timeBeforeProduction thereIsHuman");
+      System.out.println("Usage : producteurServeur port id coord prodType prodAmount prodAmoutForVictory timeBeforeProduction isTbT");
       return;
     }
     try
     {
-      boolean thereIsHuman = false;
+      boolean isTurnByTurn = false;
       if(Integer.parseInt(args[7]) == 0)
       {
-        thereIsHuman = true;
+        isTurnByTurn = true;
       }
 
-      ProducteurImpl localProducer = new ProducteurImpl(args[1], args[2], Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), thereIsHuman);
+      ProducteurImpl localProducer = new ProducteurImpl(args[1], args[2], Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]), isTurnByTurn);
       Naming.rebind("rmi://localhost:" + args[0] + "/" + args[1], localProducer);
       System.out.println(args[1] + " of type : " + args[3] + " is ready...");
     }

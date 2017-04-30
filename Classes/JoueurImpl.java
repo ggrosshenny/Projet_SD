@@ -22,7 +22,6 @@ public class JoueurImpl extends Agent implements IJoueur
   private boolean isCoop;         // Boolean to know if the player is cooperative or not
   private boolean isWatcher;      // Boolean to know if the player is watching fo other player's actions or not
   private boolean isHuman;        // Boolean to know if the player is human
-  private Joueur[] watchers;      // List of players watching for ohter player's actions
   private JoueurCommon player;    // Player object of the thread
   private Thread playerClient;    // Thread used by the player to take ressources or watch other player's actions
   private int nb_TypeRsc;         // Number of different types of ressource
@@ -50,7 +49,7 @@ public class JoueurImpl extends Agent implements IJoueur
     }
     this.nb_TypeRsc = nb_TypeRsc0;
 
-    System.out.println("JoueurImpl créé !");
+    System.out.println("Joueur créé !");
   }
 
 
@@ -82,8 +81,6 @@ public class JoueurImpl extends Agent implements IJoueur
     catch (NotBoundException re) { System.out.println(re) ; }
     catch (RemoteException re) { System.out.println(re) ; }
     catch (MalformedURLException e) { System.out.println(e) ; }
-
-    this.watchers = new Joueur[Joueurs.length];
 
     // Create the player client object
     // Create the client part of the player (p2p)
@@ -184,8 +181,6 @@ public class JoueurImpl extends Agent implements IJoueur
       }
     }
   }
-
-
 
 
   /**

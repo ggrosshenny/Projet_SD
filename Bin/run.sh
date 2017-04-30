@@ -25,12 +25,9 @@ fi
 # Si au moins un joueur humain est annoncé, la partie passe automatique en tour-par-tour
 TbT=$8
 TimeBeforeProduction=$7
-thereIsHuman=1
 if [ ${11} -ge 1 ]
 then
 	TbT=0
-	TimeBeforeProduction=10000
-	thereIsHuman=0
 fi
 
 
@@ -82,7 +79,7 @@ for i in $ProdIDList
 do
   rscType=$((($rscType+1)%$4))
   rscTypeCtrlList="$rscTypeCtrlList $rscType"
-  xterm -e java ProducteurServeur $1 $i $Coordinateur $rscType $5 $6 $TimeBeforeProduction $thereIsHuman &
+  xterm -e java ProducteurServeur $1 $i $Coordinateur $rscType $5 $6 $TimeBeforeProduction $TbT &
 done
 
 echo $rscTypeCtrlList

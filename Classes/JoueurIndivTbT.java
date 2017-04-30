@@ -192,7 +192,7 @@ public class JoueurIndivTbT extends JoueurCommon implements Runnable
     while(!finished && running)
     {
     }
-    
+
   }
 
 

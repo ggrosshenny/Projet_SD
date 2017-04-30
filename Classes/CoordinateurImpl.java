@@ -56,6 +56,7 @@
       this.barrier = false;
 			this.Players = new String[nb_players];
 			this.Producers = new String[nb_TypeRsc][nb_producers];
+      this.nb_producersEmpty = 0;
 
 
       // Creation of players log ArrayList
@@ -88,14 +89,11 @@
 			}
 			for(i = 0; i < this.nb_producers; i++){
 				try {
-					//System.out.println("avant : " + "rmi://" + args[0] + ":" + args[1] + "/" + args[4+nb_players+i]);
 					tempProd = (Producteur) Naming.lookup("rmi://" + args[0] + ":" + args[1] + "/" + args[4 + this.nb_players + i]);
-					//System.out.println("avant : " + Producteurs[tempProd.getTypeOfRsc()].length + " , " );
 					while(this.Producers[tempProd.getTypeOfRsc()][j] != null){
 						j++;
 					}
 					this.Producers[tempProd.getTypeOfRsc()][j] = "rmi://" + args[0] + ":" + args[1] + "/" + args[4 + this.nb_players + i];
-					//System.out.println("Apres");
 				}
 				catch (NotBoundException re) { System.out.println(re) ; }
 				catch (RemoteException re) { System.out.println(re) ; }
@@ -126,7 +124,6 @@
      // If all agents are ready
      if(this.nb_agentReady == this.nb_players)
      {
-
        for(i = 0; i < this.Producers.length; i++) // Tell to all producers that game is ended
        {
  				for(j = 0; j < this.Producers[i].length; j++)
@@ -175,12 +172,35 @@
   {
     String nextPlayerAddr;
     IJoueur tempPlayer;
+    Producteur tempProd;
+    int i = 0;
+    int j = 0;
     // Getting player number
     int playerNumber = Integer.parseInt(id.substring(id.length()-1, id.length()));;
 
     // Verifying the number of the player to identify the next player to notify
     if((playerNumber-1) == CurrentPlayerPLaying)
     {
+      // Verify if all players have passed their turn
+      if(((CurrentPlayerPLaying + 1)%this.nb_players) == 0)
+      {
+        for(i = 0; i < this.Producers.length; i++){
+    			for(j = 0; j < this.Producers[i].length; j++){
+
+    				try {
+    					if(Producers[i][j] != null){
+    						tempProd = (Producteur)Naming.lookup(this.Producers[i][j]);
+    					 	tempProd.turnStart();
+    					}
+    				}
+    				catch (NotBoundException re) { System.out.println(re) ; }
+    				catch (RemoteException re) { System.out.println(re) ; }
+    				catch (MalformedURLException e) { System.out.println(e) ; }
+    			}
+    		}
+      }
+
+      // Choose the next player
       CurrentPlayerPLaying = (CurrentPlayerPLaying + 1)%this.nb_players;
       nextPlayerAddr = Players[CurrentPlayerPLaying];
       try
@@ -213,6 +233,8 @@
     int test = 0;
 
     this.nb_producersEmpty++;
+
+    System.out.println("Il y a " + this.nb_producersEmpty + "/" + this.nb_producers + " de produceteurs vides.");
 
     if((this.nb_producersEmpty == this.nb_producers) && (!finished))
     {
@@ -274,15 +296,15 @@
 					catch (MalformedURLException e) { System.out.println(e) ; }
 				}
 			}
-			
-	  // Calculate the total amount of ressources per player, then sort them 
+
+	  // Calculate the total amount of ressources per player, then sort them
 	  // from the one with the most to the one with the less
 	  int[] totalRscAmountPerPlayer = new int[this.nb_players];
 	  int[] temp = new int[this.nb_players];
-		
+
 	  for (i = 0; i < this.nb_players; i++){
 		  try{
-			  
+
 			tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
 			totalRscAmountPerPlayer[i] = tempJoueur.getRscSum();
 		  }
@@ -290,13 +312,13 @@
 		  catch (RemoteException re) { System.out.println(re) ; }
 		  catch (MalformedURLException e) { System.out.println(e) ; }
 	  }
-	  
+
 	  System.arraycopy(totalRscAmountPerPlayer,0, temp, 0, totalRscAmountPerPlayer.length);
 	  int[] Ranking = new int[this.nb_players];
 	  int idx = 0;
 	  for(i = 0; i < this.nb_players; i++){
 	    for(int j = 0; j < this.nb_players; j++){
-				
+
 		  if(temp[idx] < temp[j])
 		    idx = j;
 		}
@@ -397,44 +419,44 @@
 		Producteur tempProd;
 		if(finished == false){
 			finished = true;
-		
-		// Calculate the total amount of ressources per player, then sort them 
+
+		// Calculate the total amount of ressources per player, then sort them
 		// from the one with the most to the one with the less
 		int[] Ranking = new int[this.nb_players];
 		int[] totalRscAmountPerPlayer = new int[this.nb_players];
 		int[] temp = new int[this.nb_players];
-		
+
 		Ranking[0] = Integer.parseInt(idJoueur.substring(idJoueur.length() - 1))-1;
 		for (int i = 0; i < this.nb_players; i++){
 		  try{
-			  
+
 			tempJoueur = (IJoueur)Naming.lookup(this.Players[i]);
 			totalRscAmountPerPlayer[i] = tempJoueur.getRscSum();
-			
+
 		  }
 		  catch (NotBoundException re) { System.out.println(re) ; }
 		  catch (RemoteException re) { System.out.println(re) ; }
 		  catch (MalformedURLException e) { System.out.println(e) ; }
 		}
-		
+
 		System.arraycopy(totalRscAmountPerPlayer, 0, temp, 0, totalRscAmountPerPlayer.length);
 		temp[Integer.parseInt(idJoueur.substring(idJoueur.length() - 1))-1] = 0;
 		int idx = 0;
 
 		for(int i = 1; i < this.nb_players; i++){
 				for(int j = 0; j < this.nb_players; j++){
-				
+
 					if(temp[idx] < temp[j])
 						idx = j;
 				}
 				Ranking[i] = idx;
 				temp[idx] = 0;
 		}
-		
+
 
 		System.out.println("La partie est finie.");
 		String message = new String("The game is over, the winner is : " + idJoueur);
-		
+
 		for(int i = 0; i < this.Players.length; i++){
 
 			try {

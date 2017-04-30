@@ -14,12 +14,16 @@
  public class ProducteurImpl extends Agent implements Producteur
  {
    // Attributes
-   private Ressource production;      // Ressource produced by the producer
-   private int amountToTake;          // Amount that the player will take when soliciting the producer
-   private int timeBeforeProduction;  // Time in ms before ressource production
-   public Toolkit toolkit;            // Toolkit used by TimerTask
-   public Timer timer;                // Timer used to shedule the task
-   private boolean thereIsHuman;             // Boolean to know is the game is turn bu turn
+   private Ressource production;              // Ressource produced by the producer
+   private int amountToTake;                  // Amount that the player will take when soliciting the producer
+   private int timeBeforeProduction;          // Time in ms before ressource production
+   private ProductionTaskTbT productionTask;  // Production task object for turn by turn game
+   private Thread ProductionThread;           // Thread to manage the production turn by turn
+   public Toolkit toolkitProd;                // Toolkit used by production TimerTask
+   public Timer timerProd;                    // Timer used to shedule the production task
+   public Toolkit toolkitLog;                 // Toolkit used by log TimerTask
+   public Timer timerLog;                     // Timer used to shedule the log task
+   private boolean isTurnByTurn;              // Boolean to know is the game is turn bu turn
 
    // Methods
 
@@ -32,7 +36,7 @@
    * Desc : constructor of the Producteur class
    * return : void
    **/
-   public ProducteurImpl(String id0, String coord, int typeRsc, int amountRsc, int amountForVictRsc,int timeBeforeProduction0, boolean thereIsHuman0)
+   public ProducteurImpl(String id0, String coord, int typeRsc, int amountRsc, int amountForVictRsc,int timeBeforeProduction0, boolean isTbT0)
       throws RemoteException
    {
      super(id0, 0, coord);
@@ -40,9 +44,14 @@
      this.production = new Ressource(typeRsc, amountRsc, amountForVictRsc);
      this.amountToTake = 3;
      this.timeBeforeProduction = timeBeforeProduction0;
-     toolkit = Toolkit.getDefaultToolkit();
-     timer = new Timer();
-     this.thereIsHuman = thereIsHuman0;
+     if(!isTbT0)
+     {
+       this.toolkitProd = Toolkit.getDefaultToolkit();
+       this.timerProd = new Timer();
+       this.toolkitLog = Toolkit.getDefaultToolkit();
+       this.timerLog = new Timer();
+     }
+     this.isTurnByTurn = isTbT0;
    }
 
 
@@ -54,26 +63,54 @@
   **/
   public synchronized void begin()
   {
-    timer.schedule(new ProductionTask(this.production, this.coordinateur),
-	                  0,        //initial delay
-	                  this.timeBeforeProduction);  //subsequent rate
-
-
     // initialisation of log system
-    if(thereIsHuman)
+    if(isTurnByTurn)
     {
-      System.out.println("Il y a un humain !");
-      // Starting log system that will give the producer status each 10 ms
-      timer.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
-                     0,        //initial delay
-                     this.timeBeforeProduction/5);      //subsequent rate
+      System.out.println("Le jeu est tour par tour");
+      productionTask = new ProductionTaskTbT(this.production, this.coordinateur, this.id, this);
+      ProductionThread = new Thread(new Thread(productionTask, this.id + "_threadProducer"));
+      ProductionThread.start();
     }
     else
     {
+      toolkitLog = Toolkit.getDefaultToolkit();
+      timerLog = new Timer();
       // Starting log system that will give the producer status each 10 ms
-      timer.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
+      timerLog.schedule(new setLogProducerTask(this.production, this.coordinateur, this.id),
                      0,        //initial delay
                      10);      //subsequent rate
+      timerProd.schedule(new ProductionTask(this.production, this.coordinateur),
+                 	   0,        //initial delay
+                 	   this.timeBeforeProduction);  //subsequent rate
+    }
+  }
+
+
+  /**
+  * Method : printMsg
+  * Param : String msg
+  * Desc : print a message on standard output.
+  * Return : void
+  **/
+  public void printMsg(String msg)
+  {
+    System.out.println(msg);
+  }
+
+  /**
+  * Method : turnStart
+  * Param : void
+  * Desc : Signal received from coordinator. Start the turn of the producer production task.
+  * Return : void
+  **/
+  public synchronized void turnStart()
+  {
+    if( (isTurnByTurn) && (ProductionThread.isAlive()))
+    {
+      synchronized(this)
+      {
+        this.notify();
+      }
     }
   }
 
@@ -163,11 +200,24 @@
    * Desc : Stop the client thread and shut down rmi server cleanly
    * Return : void
    **/
-   public void gameIsOver(String message)
+   public synchronized void gameIsOver(String message)
    {
      System.out.println(message);
-     timer.cancel();
-     timer.purge();
+     if(isTurnByTurn)
+     {
+       if(this.ProductionThread.isAlive())
+       {
+         this.productionTask.stopProduction();
+       }
+     }
+     else
+     {
+       timerProd.cancel();
+       timerProd.purge();
+       timerLog.cancel();
+       timerLog.purge();
+     }
+     System.out.println("J'ai finis la production et il me reste : " + this.production.getAmount() + " of ressource " + this.production.getType());
    }
 
  }

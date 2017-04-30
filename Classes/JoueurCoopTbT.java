@@ -47,7 +47,6 @@ public class JoueurCoopTbT extends JoueurCommon implements Runnable
 
     // Control message
     System.out.println("Je suis un joueur coop tbt et je commence mon travail !");
-
     while(!finished && running)
     {
 
